@@ -1,0 +1,52 @@
+name: Snapshots
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+    inputs: {}
+
+env:
+  CI: true
+
+jobs:
+  windup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: windup/windup
+      - uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: 11
+      - name: OSSRH Snapshot
+        run: mvn deploy -DskipTests
+
+  windup-rulesets:
+    needs: [windup]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: windup/windup-rulesets
+      - uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: 11
+      - name: OSSRH Snapshot
+        run: mvn deploy -DskipTests
+  
+  windup-distribution:
+    needs: [windup]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: windup/windup-distribution
+      - uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: 11
+      - name: OSSRH Snapshot
+        run: mvn deploy -DskipTests
