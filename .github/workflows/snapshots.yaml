@@ -20,8 +20,14 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 11
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
       - name: OSSRH Snapshot
         run: mvn deploy -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   windup-rulesets:
     needs: [windup]
@@ -34,8 +40,14 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 11
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
       - name: OSSRH Snapshot
         run: mvn deploy -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
   
   windup-distribution:
     needs: [windup]
@@ -48,5 +60,11 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 11
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
       - name: OSSRH Snapshot
         run: mvn deploy -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
