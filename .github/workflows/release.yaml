@@ -19,11 +19,17 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: OSSRH Snapshot
-        run: mvn deploy -DskipTests
+        run: |
+          mvn -DskipTests \
+          release:prepare -DpreparationGoals='-DskipTests clean install' \
+          release:perform -P jboss-release,gpg-sign
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-rulesets:
     needs: [windup]
@@ -39,11 +45,17 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: OSSRH Snapshot
-        run: mvn deploy -DskipTests
+        run: |
+          mvn -DskipTests \
+          release:prepare -DpreparationGoals='-DskipTests clean install' \
+          release:perform -P jboss-release,gpg-sign
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-distribution:
     needs: [windup-rulesets]
@@ -59,11 +71,17 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: OSSRH Snapshot
-        run: mvn deploy -DskipTests
+        run: |
+          mvn -DskipTests \
+          release:prepare -DpreparationGoals='-DskipTests clean install' \
+          release:perform -P jboss-release,gpg-sign
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-web:
     needs: [windup-distribution]
@@ -79,11 +97,17 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: OSSRH Snapshot
-        run: mvn deploy -DskipTests
+        run: |
+          mvn -DskipTests \
+          release:prepare -DpreparationGoals='-DskipTests clean install' \
+          release:perform -P jboss-release,gpg-sign
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-keyckoak-tool:
     needs: [windup-web]
@@ -99,11 +123,17 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: OSSRH Snapshot
-        run: mvn deploy -DskipTests
+        run: |
+          mvn -DskipTests \
+          release:prepare -DpreparationGoals='-DskipTests clean install' \
+          release:perform -P jboss-release,gpg-sign
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-web-keycloak-theme:
     needs: [windup-web]
@@ -119,11 +149,17 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: OSSRH Snapshot
-        run: mvn deploy -DskipTests
+        run: |
+          mvn -DskipTests \
+          release:prepare -DpreparationGoals='-DskipTests clean install' \
+          release:perform -P jboss-release,gpg-sign
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-openshift:
     needs: [windup-keyckoak-tool, windup-web-keycloak-theme]
@@ -168,11 +204,17 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: OSSRH Snapshot
-        run: mvn deploy -DskipTests
+        run: |
+          mvn -DskipTests \
+          release:prepare -DpreparationGoals='-DskipTests clean install' \
+          release:perform -P jboss-release,gpg-sign
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-maven-plugin:
     needs: [windup-web-distribution]
@@ -188,8 +230,14 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: OSSRH Snapshot
-        run: mvn deploy -DskipTests
+        run: |
+          mvn -DskipTests \
+          release:prepare -DpreparationGoals='-DskipTests clean install' \
+          release:perform -P jboss-release,gpg-sign
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
