@@ -4,10 +4,14 @@ on:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
-    inputs: {}
+    inputs:
+      repository:
+        description: "Repository to create a Snapshot for. Leave blank for creating all repositories Snapshots (recomended)."
+        required: false
 
 jobs:
   windup:
+    if: ${{ github.event.inputs.repository != '' && github.event.inputs.repository == 'windup' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -27,6 +31,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   windup-rulesets:
+    if: ${{ github.event.inputs.repository != '' && github.event.inputs.repository == 'windup-rulesets' }}
     needs: [windup]
     runs-on: ubuntu-latest
     steps:
@@ -47,6 +52,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   windup-distribution:
+    if: ${{ github.event.inputs.repository != '' && github.event.inputs.repository == 'windup-distribution' }}
     needs: [windup-rulesets]
     runs-on: ubuntu-latest
     steps:
@@ -67,6 +73,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   windup-web:
+    if: ${{ github.event.inputs.repository != '' && github.event.inputs.repository == 'windup-web' }}
     needs: [windup-distribution]
     runs-on: ubuntu-latest
     steps:
@@ -87,6 +94,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   windup-keyckoak-tool:
+    if: ${{ github.event.inputs.repository != '' && github.event.inputs.repository == 'windup-keycloak-tool' }}
     needs: [windup-web]
     runs-on: ubuntu-latest
     steps:
@@ -107,6 +115,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   windup-web-keycloak-theme:
+    if: ${{ github.event.inputs.repository != '' && github.event.inputs.repository == 'windup-keycloak-theme' }}
     needs: [windup-web]
     runs-on: ubuntu-latest
     steps:
@@ -127,6 +136,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   windup-openshift:
+    if: ${{ github.event.inputs.repository != '' && github.event.inputs.repository == 'windup-openshift' }}
     needs: [windup-keyckoak-tool, windup-web-keycloak-theme]
     runs-on: ubuntu-latest
     steps:
@@ -156,6 +166,7 @@ jobs:
           docker push quay.io/windupeng/windup-web-openshift
 
   windup-web-distribution:
+    if: ${{ github.event.inputs.repository != '' && github.event.inputs.repository == 'windup-web-distribution' }}
     needs: [windup-openshift]
     runs-on: ubuntu-latest
     steps:
@@ -176,6 +187,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   windup-maven-plugin:
+    if: ${{ github.event.inputs.repository != '' && github.event.inputs.repository == 'windup-maven-plugin' }}
     needs: [windup-web-distribution]
     runs-on: ubuntu-latest
     steps:
