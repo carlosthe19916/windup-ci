@@ -50,7 +50,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
   
   windup-distribution:
-    needs: [windup]
+    needs: [windup-rulesets]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
