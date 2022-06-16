@@ -1,7 +1,7 @@
 name: Windup Themes
 
 on:
-  workflow_dispatch: { }
+  workflow_dispatch: {}
 
 jobs:
   build:
@@ -12,6 +12,7 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 11
+          cache: "maven"
 
       # Windup
       - uses: actions/checkout@v3
@@ -66,8 +67,9 @@ jobs:
           repository: carlosthe19916/windup-openshift
           path: windup-openshift
           ref: upstream-downstream-build
-      - working-directory: windup-openshift
-        run: mvn install -DskipTests -Ddownstream=tackle
+      # - working-directory: windup-openshift
+      #   run: mvn install -DskipTests -Ddownstream=tackle
+
       # windup-web-distribution
       - uses: actions/checkout@v3
         with:
