@@ -7,6 +7,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # Windup
+      - uses: actions/checkout@v3
+        with:
+          repository: mrizzi/windup
+          path: windup
+          ref: eclipse-org.osgi.service.prefs-fix # To avoid the Eclipse bug
       # Install JDK
       - uses: actions/setup-java@v3
         with:
@@ -14,12 +20,6 @@ jobs:
           java-version: 11
           cache: "maven"
 
-      # Windup
-      - uses: actions/checkout@v3
-        with:
-          repository: mrizzi/windup
-          path: windup
-          ref: eclipse-org.osgi.service.prefs-fix # To avoid the Eclipse bug
       - working-directory: windup
         run: mvn install -DskipTests -Ddownstream=tackle
       # Windup rulesets
