@@ -16,9 +16,9 @@ jobs:
       # Windup
       - uses: actions/checkout@v3
         with:
-          repository: windup/windup
+          repository: mrizzi/windup
           path: windup
-          ref: 4e879906534ec6b024fe002ee9a5b7354e8aa6be # To avoid the Eclipse bug
+          ref: eclipse-org.osgi.service.prefs-fix # To avoid the Eclipse bug
       - working-directory: windup
         run: mvn install -DskipTests -Ddownstream=tackle
       # Windup rulesets
