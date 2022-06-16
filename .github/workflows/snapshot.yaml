@@ -24,8 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          repository: mrizzi/windup
-          ref: eclipse-org.osgi.service.prefs-fix
+          repository: windup/windup
       - uses: actions/setup-java@v3
         with:
           distribution: "temurin"

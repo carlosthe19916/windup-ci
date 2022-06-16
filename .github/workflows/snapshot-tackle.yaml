@@ -11,8 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          repository: mrizzi/windup
-          ref: eclipse-org.osgi.service.prefs-fix
+          repository: windup/windup
           path: windup
       - uses: actions/checkout@v3
         with:
@@ -32,13 +31,16 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
       - name: Build
-        run: |
-          # Change groupId
-          find windup-distribution/ -name "pom.xml" | xargs sed -i '0,/mta-cli/{s/<artifactId>mta-cli<\/artifactId>/<artifactId>tackle-cli<\/artifactId>/g}'
-
+        run: |          
           mvn install -DskipTests -f windup
           mvn install -DskipTests -f windup-rulesets
           mvn install -DskipTests -f windup-distribution
+      - name: windup
+        working-directory: windup
+        run: mvn install -DskipTests
+      - name: windup-rulesets
+        working-directory: windup-rulesets
+        run: mvn install -DskipTests
       - name: OSSRH Snapshot
         working-directory: windup-distribution
         run: mvn deploy -DskipTests
