@@ -10,7 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          repository: windup/windup
+          repository: mrizzi/windup
+          ref: eclipse-org.osgi.service.prefs-fix
           path: windup
       - uses: actions/checkout@v3
         with:
@@ -25,6 +26,7 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 11
+          cache: "maven"
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
