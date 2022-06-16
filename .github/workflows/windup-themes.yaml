@@ -67,8 +67,8 @@ jobs:
           repository: carlosthe19916/windup-openshift
           path: windup-openshift
           ref: upstream-downstream-build
-      # - working-directory: windup-openshift
-      #   run: mvn install -DskipTests -Ddownstream=tackle
+      - working-directory: windup-openshift
+        run: mvn install -DskipTests -Ddownstream=tackle -f templates # Only build templates since container images will require authentication from rh registry
 
       # windup-web-distribution
       - uses: actions/checkout@v3

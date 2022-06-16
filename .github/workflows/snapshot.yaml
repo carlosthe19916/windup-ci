@@ -157,6 +157,11 @@ jobs:
           distribution: "temurin"
           java-version: 11
           cache: "maven"
+      - name: OSSRH Snapshot
+        run: mvn deploy -DskipTests -f templates # Release only templates since the other modules will require rh registry authz
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       # - name: Build container images
       #   run: |
       #     mvn deploy -DskipTests \
