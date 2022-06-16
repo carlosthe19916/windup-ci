@@ -1,0 +1,8 @@
+project:    
+  website: https://windup.github.io/
+
+release:
+  github:
+    owner: windup
+    branch: master
+    overwrite: true

@@ -1,9 +1,18 @@
 name: Release
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "The value of the version to be released"
+        required: true
+        default: "Ex: 2.0.1.Final"
+        type: string
+      nextDevelopmentVersion:
+        description: "The value of the next version to be developed"
+        required: true
+        default: "Ex: 2.0.2-SNAPSHOT"
+        type: string
 
 jobs:
   windup:
@@ -12,6 +21,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: windup/windup
+      - run: ./set-version.sh
+        env:
+          NEXT_VERSION: ${{ github.event.inputs.release_version }}
       - uses: actions/setup-java@v3
         with:
           distribution: "temurin"
@@ -30,6 +42,13 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Configure JReleaser
+        run: |
+          cp jreleaser.yml jreleaser.yml
+      - uses: jreleaser/release-action@v2
+        env:
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+          JRELEASER_PROJECT_VERSION: ${{ github.event.inputs.release_version }}
 
   windup-rulesets:
     needs: [windup]
@@ -38,6 +57,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: windup/windup-rulesets
+      - run: ./set-version.sh
+        env:
+          NEXT_VERSION: ${{ github.event.inputs.release_version }}
       - uses: actions/setup-java@v3
         with:
           distribution: "temurin"
@@ -64,6 +86,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: windup/windup-distribution
+      - run: ./set-version.sh
+        env:
+          NEXT_VERSION: ${{ github.event.inputs.release_version }}
       - uses: actions/setup-java@v3
         with:
           distribution: "temurin"
@@ -90,58 +115,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: windup/windup-web
-      - uses: actions/setup-java@v3
-        with:
-          distribution: "temurin"
-          java-version: 11
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
-      - name: OSSRH Snapshot
-        run: |
-          mvn -DskipTests \
-          release:prepare -DpreparationGoals='-DskipTests clean install' \
-          release:perform -P jboss-release,gpg-sign
+      - run: ./set-version.sh
         env:
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-  windup-keyckoak-tool:
-    needs: [windup-web]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          repository: windup/windup-keycloak-tool
-      - uses: actions/setup-java@v3
-        with:
-          distribution: "temurin"
-          java-version: 11
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
-      - name: OSSRH Snapshot
-        run: |
-          mvn -DskipTests \
-          release:prepare -DpreparationGoals='-DskipTests clean install' \
-          release:perform -P jboss-release,gpg-sign
-        env:
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-  windup-web-keycloak-theme:
-    needs: [windup-web]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          repository: windup/windup-web-keycloak-theme
+          NEXT_VERSION: ${{ github.event.inputs.release_version }}
       - uses: actions/setup-java@v3
         with:
           distribution: "temurin"
@@ -162,12 +138,15 @@ jobs:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-openshift:
-    needs: [windup-keyckoak-tool, windup-web-keycloak-theme]
+    needs: [windup-web]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           repository: windup/windup-openshift
+      - run: ./set-version.sh
+        env:
+          NEXT_VERSION: ${{ github.event.inputs.release_version }}
       - uses: actions/setup-java@v3
         with:
           distribution: "temurin"
@@ -175,9 +154,9 @@ jobs:
       - name: Build container images
         run: |
           mvn deploy -DskipTests \
-          -Ddocker.name.windup.web.executor=quay.io/windupeng/windup-web-openshift-messaging-executor \
-          -Ddocker.name.windup.cli=quay.io/windupeng/windup-cli-openshift \
-          -Ddocker.name.windup.web=quay.io/windupeng/windup-web-openshift
+          -Ddocker.name.windup.web.executor=quay.io/windupeng/windup-web-openshift-messaging-executor:${{ github.event.inputs.release_version }} \
+          -Ddocker.name.windup.cli=quay.io/windupeng/windup-cli-openshift:${{ github.event.inputs.release_version }} \
+          -Ddocker.name.windup.web=quay.io/windupeng/windup-web-openshift:${{ github.event.inputs.release_version }}
       - name: Login to Registry
         uses: docker/login-action@v2
         with:
@@ -186,9 +165,9 @@ jobs:
           password: ${{ secrets.QUAYIO_PASSWORD }}
       - name: Push images to Registry
         run: |
-          docker push quay.io/windupeng/windup-cli-openshift
-          docker push quay.io/windupeng/windup-web-openshift-messaging-executor
-          docker push quay.io/windupeng/windup-web-openshift
+          docker push quay.io/windupeng/windup-cli-openshift:${{ github.event.inputs.release_version }}
+          docker push quay.io/windupeng/windup-web-openshift-messaging-executor:${{ github.event.inputs.release_version }}
+          docker push quay.io/windupeng/windup-web-openshift:${{ github.event.inputs.release_version }}
 
   windup-web-distribution:
     needs: [windup-openshift]
@@ -197,6 +176,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: windup/windup-web-distribution
+      - run: ./set-version.sh
+        env:
+          NEXT_VERSION: ${{ github.event.inputs.release_version }}
       - uses: actions/setup-java@v3
         with:
           distribution: "temurin"
@@ -223,6 +205,38 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: windup/windup-maven-plugin
+      - run: ./set-version.sh
+        env:
+          NEXT_VERSION: ${{ github.event.inputs.release_version }}
+      - uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: 11
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      - name: OSSRH Snapshot
+        run: |
+          mvn -DskipTests \
+          release:prepare -DpreparationGoals='-DskipTests clean install' \
+          release:perform -P jboss-release,gpg-sign
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+  
+  windup-quickstarts:
+    needs: [windup-web-distribution]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: windup/windup-maven-plugin
+      - run: ./set-version.sh
+        env:
+          NEXT_VERSION: ${{ github.event.inputs.release_version }}
       - uses: actions/setup-java@v3
         with:
           distribution: "temurin"

@@ -5,7 +5,7 @@ on:
     - cron: "0 0 * * *"
 
 jobs:
-  tackle:    
+  tackle:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -27,9 +27,12 @@ jobs:
           java-version: 11
           server-id: ossrh
           server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD          
+          server-password: MAVEN_PASSWORD
       - name: Build
         run: |
+          # Change groupId
+          find windup-distribution/ -name "pom.xml" | xargs sed -i 's/<groupId>org.jboss.windup<\/groupId>/<groupId>io.konveyor.windup<\/groupId>/g'
+
           mvn install -DskipTests -f windup
           mvn install -DskipTests -f windup-rulesets
           mvn install -DskipTests -f windup-distribution
