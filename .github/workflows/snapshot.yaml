@@ -1,5 +1,15 @@
 name: Snapshots
 
+# What to change
+# Change windup repository to point to windup/windup master branch
+# Change carlosthe19916 Quay repository to point to windupeng
+
+# Don't forget to add the Secrets to your account
+# NEXUS_USERNAME
+# NEXUS_PASSWORD
+# QUAYIO_USERNAME
+# QUAYIO_PASSWORD
+
 on:
   schedule:
     - cron: "0 0 * * *"
@@ -140,9 +150,9 @@ jobs:
       - name: Build container images
         run: |
           mvn deploy -DskipTests \
-          -Ddocker.name.windup.web.executor=quay.io/windupeng/windup-web-openshift-messaging-executor \
-          -Ddocker.name.windup.cli=quay.io/windupeng/windup-cli-openshift \
-          -Ddocker.name.windup.web=quay.io/windupeng/windup-web-openshift
+          -Ddocker.name.windup.web.executor=quay.io/carlosthe19916/windup-web-openshift-messaging-executor \
+          -Ddocker.name.windup.cli=quay.io/carlosthe19916/windup-cli-openshift \
+          -Ddocker.name.windup.web=quay.io/carlosthe19916/windup-web-openshift
       - name: Login to Registry
         uses: docker/login-action@v2
         with:
@@ -151,9 +161,9 @@ jobs:
           password: ${{ secrets.QUAYIO_PASSWORD }}
       - name: Push images to Registry
         run: |
-          docker push quay.io/windupeng/windup-cli-openshift
-          docker push quay.io/windupeng/windup-web-openshift-messaging-executor
-          docker push quay.io/windupeng/windup-web-openshift
+          docker push quay.io/carlosthe19916/windup-cli-openshift
+          docker push quay.io/carlosthe19916/windup-web-openshift-messaging-executor
+          docker push quay.io/carlosthe19916/windup-web-openshift
 
   windup-web-distribution:
     needs: [windup-openshift]

@@ -43,7 +43,7 @@ jobs:
           path: windup-web
           ref: upstream-downstream-build
       - working-directory: windup-web
-        run: mvn install -DskipTests -Ddownstream=tackle
+        run: mvn install -DskipTests -Ddownstream=tackle -s settings.xml
       # windup-keycloak-tool
       - uses: actions/checkout@v3
         with:
