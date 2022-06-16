@@ -34,7 +34,7 @@ jobs:
       - name: Build
         run: |
           # Change groupId
-          find windup-distribution/ -name "pom.xml" | xargs sed -i '0,/org.jboss.windup/{s/<groupId>org.jboss.windup<\/groupId>/<groupId>io.konveyor.windup<\/groupId>/g}'
+          find windup-distribution/ -name "pom.xml" | xargs sed -i '0,/mta-cli/{s/<artifactId>mta-cli<\/artifactId>/<artifactId>tackle-cli<\/artifactId>/g}'
 
           mvn install -DskipTests -f windup
           mvn install -DskipTests -f windup-rulesets
