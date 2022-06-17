@@ -1,5 +1,6 @@
 project:    
   website: https://windup.github.io/
+  copyright: Copyright (C) 2022 Windup
 
 release:
   github:
