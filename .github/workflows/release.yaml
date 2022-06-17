@@ -20,22 +20,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          path: ci
+      - uses: actions/checkout@v3
+        with:
           repository: windup/windup
+          path: repository
       - uses: actions/setup-java@v3
         with:
           distribution: "temurin"
           java-version: 11
+          cache: "maven"
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
-      - run: |
-          ls .
-          ls .github || true
-          ls .scripts || true
-      - run: ./set-version.sh
-        working-directory: .github/scripts
+      - name: Maven Release version
+        run: ./set-version.sh
+        working-directory: ci/.github/scripts
         env:
           NEXT_VERSION: ${{ github.event.inputs.release_version }}
       
@@ -67,6 +69,7 @@ jobs:
   #       with:
   #         distribution: "temurin"
   #         java-version: 11
+          cache: "maven"
   #         server-id: ossrh
   #         server-username: MAVEN_USERNAME
   #         server-password: MAVEN_PASSWORD
@@ -96,6 +99,7 @@ jobs:
   #       with:
   #         distribution: "temurin"
   #         java-version: 11
+          cache: "maven"
   #         server-id: ossrh
   #         server-username: MAVEN_USERNAME
   #         server-password: MAVEN_PASSWORD
@@ -125,6 +129,7 @@ jobs:
   #       with:
   #         distribution: "temurin"
   #         java-version: 11
+          cache: "maven"
   #         server-id: ossrh
   #         server-username: MAVEN_USERNAME
   #         server-password: MAVEN_PASSWORD
@@ -157,6 +162,7 @@ jobs:
   #       with:
   #         distribution: "temurin"
   #         java-version: 11
+          cache: "maven"
   #     - name: Build container images
   #       run: |
   #         mvn deploy -DskipTests \
@@ -186,6 +192,7 @@ jobs:
   #       with:
   #         distribution: "temurin"
   #         java-version: 11
+          cache: "maven"
   #         server-id: ossrh
   #         server-username: MAVEN_USERNAME
   #         server-password: MAVEN_PASSWORD
@@ -215,6 +222,7 @@ jobs:
   #       with:
   #         distribution: "temurin"
   #         java-version: 11
+          cache: "maven"
   #         server-id: ossrh
   #         server-username: MAVEN_USERNAME
   #         server-password: MAVEN_PASSWORD
@@ -244,6 +252,7 @@ jobs:
   #       with:
   #         distribution: "temurin"
   #         java-version: 11
+          cache: "maven"
   #         server-id: ossrh
   #         server-username: MAVEN_USERNAME
   #         server-password: MAVEN_PASSWORD
