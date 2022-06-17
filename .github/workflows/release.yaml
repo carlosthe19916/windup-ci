@@ -36,11 +36,12 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: Maven Release version
-        run: ./set-version.sh
-        working-directory: ci/.github/scripts
+        run: |
+          source ci/release/utils.sh
+          setNextVersion()
         env:
           NEXT_VERSION: ${{ github.event.inputs.release_version }}
-      
+
       # - name: OSSRH Snapshot
       #   run: |
       #     mvn -DskipTests \
