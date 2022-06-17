@@ -1,7 +1,5 @@
 name: Release
 
-# Create  PAT Token with permissions to all repos and then set to secrets JRELEASER_GITHUB_TOKEN
-
 on:
   workflow_dispatch:
     inputs:
@@ -60,7 +58,7 @@ jobs:
           arguments: full-release
         env:
           JRELEASER_PROJECT_VERSION: ${{ github.event.inputs.release_version }}
-          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # change by for prod ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
 
 
   # windup-rulesets:
