@@ -9,6 +9,8 @@ function setNextVersion() {
 }
 
 function releaseVersion() {
+    echo "Not releasing to Maven central yet"
+    
     # mvn -DskipTests \
     # release:prepare -DpreparationGoals='-DskipTests clean install' \
     # release:perform -P jboss-release,gpg-sign
