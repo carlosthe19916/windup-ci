@@ -8,7 +8,7 @@ on:
         required: true
         default: "Ex: 5.4.0.Final"
         type: string
-      nextDevelopmentVersion:
+      next_development_version:
         description: "The value of the next version to be developed"
         required: true
         default: "Ex: 5.4.1-SNAPSHOT"
@@ -18,15 +18,18 @@ jobs:
   windup:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout CI
+        uses: actions/checkout@v3
         with:
           path: ci
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
         with:
           repository: carlosthe19916/windup
           path: repository
           token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
-      - uses: actions/setup-java@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
         with:
           distribution: "temurin"
           java-version: 11
@@ -36,24 +39,25 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
-      - name: Maven Release version
+      - name: Set release version ${{ github.event.inputs.release_version }}
         run: |
           source ci/release/utils.sh
-          cd repository && setNextVersion
+          cd repository && setReleaseVersion
         env:
           NEXT_VERSION: ${{ github.event.inputs.release_version }}
-      - name: OSSRH Snapshot
+      - name: Release to OSSRH
         run: |
           source ci/release/utils.sh
-          cd repository && releaseVersion
+          cd repository && release
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      - name: Configure JReleaser
+      - name: Setup JReleaser
         run: |
           cp ci/release/generic-jreleaser.yml repository/jreleaser.yml
-      - uses: jreleaser/release-action@v2
+      - name: JReleaser
+        uses: jreleaser/release-action@v2
         with:
           working-directory: repository
           arguments: full-release
@@ -70,6 +74,12 @@ jobs:
         with:
           name: windup-jreleaser-log
           path: "repository/jreleaser-log.tgz"
+      - name: Set next development version ${{ github.event.inputs. next_development_version }}
+        run: |
+          source ci/release/utils.sh
+          cd repository && setNextDevelopmentVersion
+        env:
+          NEXT_VERSION: ${{ github.event.inputs.next_development_version }}
 
   # windup-rulesets:
   #   needs: [windup]
