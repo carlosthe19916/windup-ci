@@ -7,3 +7,9 @@ function setNextVersion() {
     git commit --allow-empty -a -m "🏁 Releasing version $NEXT_VERSION"
     # git push origin HEAD:master
 }
+
+function releaseVersion() {
+    mvn -DskipTests \
+    release:prepare -DpreparationGoals='-DskipTests clean install' \
+    release:perform -P jboss-release,gpg-sign
+}

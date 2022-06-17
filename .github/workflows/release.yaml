@@ -41,23 +41,24 @@ jobs:
           cd repository && setNextVersion
         env:
           NEXT_VERSION: ${{ github.event.inputs.release_version }}
-
       # - name: OSSRH Snapshot
       #   run: |
-      #     mvn -DskipTests \
-      #     release:prepare -DpreparationGoals='-DskipTests clean install' \
-      #     release:perform -P jboss-release,gpg-sign
+      #     source ci/release/utils.sh
+      #     cd repository && releaseVersion
       #   env:
       #     MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       #     MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       #     MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      # - name: Configure JReleaser
-      #   run: |
-      #     cp jreleaser.yml jreleaser.yml
-      # - uses: jreleaser/release-action@v2
-      #   env:
-      #     JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
-      #     JRELEASER_PROJECT_VERSION: ${{ github.event.inputs.release_version }}
+      - name: Configure JReleaser
+        run: |
+          cp release/jreleaser.yml repository/jreleaser.yml
+      - uses: jreleaser/release-action@v2
+        with:
+          working-directory: repository
+          arguments: config
+        env:
+          JRELEASER_PROJECT_VERSION: ${{ github.event.inputs.release_version }}
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
 
   # windup-rulesets:
   #   needs: [windup]
