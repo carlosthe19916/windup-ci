@@ -60,7 +60,16 @@ jobs:
         env:
           JRELEASER_PROJECT_VERSION: ${{ github.event.inputs.release_version }}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
-
+      - name: JReleaser - generate log
+        if: always()
+        working-directory: repository
+        run: tar -czvf jreleaser-log.tgz out/
+      - name: JReleaser - upload log
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: jreleaser-log
+          path: "repository/jreleaser-log.tgz"
 
   # windup-rulesets:
   #   needs: [windup]
