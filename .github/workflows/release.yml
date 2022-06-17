@@ -29,8 +29,9 @@ jobs:
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-  
+
   windup-rulesets:
+    needs: [windup]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
