@@ -25,6 +25,7 @@ jobs:
         with:
           repository: carlosthe19916/windup
           path: repository
+          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
       - uses: actions/setup-java@v3
         with:
           distribution: "temurin"
