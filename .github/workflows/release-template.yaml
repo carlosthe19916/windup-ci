@@ -1,0 +1,98 @@
+name: Reusable Release
+
+on:
+  workflow_call:
+    inputs:
+      owner:
+        required: true
+        type: string
+      repository:
+        required: true
+        type: string
+      release_version:
+        required: true
+        type: string
+      next_development_version:
+        required: true
+        type: string
+      jreleaser_file:
+        required: true
+        type: string
+    secrets:
+      GITHUB_TOKEN:
+        required: true
+      NEXUS_USERNAME:
+        required: true
+      NEXUS_PASSWORD:
+        required: true
+      GPG_PRIVATE_KEY:
+        required: true
+      GPG_PASSPHRASE:
+        required: true
+
+jobs:
+  release_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout CI
+        uses: actions/checkout@v3
+        with:
+          path: ci
+      - name: Checkout ${{ inputs.repository }}
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ inputs.owner }}/${{ inputs.repository }}
+          path: repository
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: 11
+          cache: "maven"
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      - name: Set release version ${{ inputs.release_version }}
+        run: |
+          source ci/release/utils.sh
+          cd repository && setReleaseVersion
+        env:
+          NEXT_VERSION: ${{ inputs.release_version }}
+      - name: Release to OSSRH
+        run: |
+          source ci/release/utils.sh
+          cd repository && release
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Setup JReleaser
+        run: |
+          cp ci/${{ inputs.jreleaser_file }} repository/jreleaser.yml
+      - name: JReleaser
+        uses: jreleaser/release-action@v2
+        with:
+          working-directory: repository
+          arguments: full-release
+        env:
+          JRELEASER_PROJECT_VERSION: ${{ inputs.release_version }}
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      - name: JReleaser - generate log
+        if: always()
+        working-directory: repository
+        run: tar -czvf jreleaser-log.tgz out/
+      - name: JReleaser - upload log
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.repository }}-jreleaser-log
+          path: "repository/jreleaser-log.tgz"
+      - name: Set next development version ${{ inputs.next_development_version }}
+        run: |
+          source ci/release/utils.sh
+          cd repository && setNextDevelopmentVersion
+        env:
+          NEXT_VERSION: ${{ inputs.next_development_version }}

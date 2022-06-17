@@ -18,8 +18,8 @@ function release() {
 
 function setNextDevelopmentVersion() {
     mvn -B versions:set versions:commit -DnewVersion="$NEXT_VERSION" -DprocessAllModules
-    git config --global user.email "project.openubl.preview.bot@gmail.com"
-    git config --global user.name "Project-Openubl Bot"
+    git config --global user.email "carlosthe19916@gmail.com"
+    git config --global user.name "Carlos Feria"
     git commit --allow-empty -a -m "⬆️  Next version $NEXT_VERSION"
     git push origin HEAD:master
 }
