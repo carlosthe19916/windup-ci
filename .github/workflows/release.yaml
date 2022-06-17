@@ -25,7 +25,7 @@ jobs:
           path: ci
       - uses: actions/checkout@v3
         with:
-          repository: windup/windup
+          repository: carlosthe19916/windup
           path: repository
       - uses: actions/setup-java@v3
         with:
@@ -43,21 +43,21 @@ jobs:
           cd repository && setNextVersion
         env:
           NEXT_VERSION: ${{ github.event.inputs.release_version }}
-      # - name: OSSRH Snapshot
-      #   run: |
-      #     source ci/release/utils.sh
-      #     cd repository && releaseVersion
-      #   env:
-      #     MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      #     MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-      #     MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      - name: OSSRH Snapshot
+        run: |
+          source ci/release/utils.sh
+          cd repository && releaseVersion
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       - name: Configure JReleaser
         run: |
-          cp ci/release/jreleaser.yml repository/jreleaser.yml
+          cp ci/release/generic-jreleaser.yml repository/jreleaser.yml
       - uses: jreleaser/release-action@v2
         with:
           working-directory: repository
-          arguments: config
+          arguments: full-release
         env:
           JRELEASER_PROJECT_VERSION: ${{ github.event.inputs.release_version }}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # change by for prod ${{ secrets.JRELEASER_GITHUB_TOKEN }}

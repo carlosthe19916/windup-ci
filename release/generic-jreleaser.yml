@@ -1,9 +1,8 @@
-project:    
+project:
   website: https://windup.github.io/
   copyright: Copyright (C) 2022 Windup
 
 release:
   github:
-    owner: windup
-    branch: master
+    owner: carlosthe19916
     overwrite: true
