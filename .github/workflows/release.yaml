@@ -69,7 +69,7 @@ jobs:
   #       with:
   #         distribution: "temurin"
   #         java-version: 11
-          cache: "maven"
+  #        cache: "maven"
   #         server-id: ossrh
   #         server-username: MAVEN_USERNAME
   #         server-password: MAVEN_PASSWORD
@@ -99,7 +99,7 @@ jobs:
   #       with:
   #         distribution: "temurin"
   #         java-version: 11
-          cache: "maven"
+  #        cache: "maven"
   #         server-id: ossrh
   #         server-username: MAVEN_USERNAME
   #         server-password: MAVEN_PASSWORD
@@ -129,7 +129,7 @@ jobs:
   #       with:
   #         distribution: "temurin"
   #         java-version: 11
-          cache: "maven"
+  #        cache: "maven"
   #         server-id: ossrh
   #         server-username: MAVEN_USERNAME
   #         server-password: MAVEN_PASSWORD
@@ -162,7 +162,7 @@ jobs:
   #       with:
   #         distribution: "temurin"
   #         java-version: 11
-          cache: "maven"
+  #        cache: "maven"
   #     - name: Build container images
   #       run: |
   #         mvn deploy -DskipTests \
@@ -192,7 +192,7 @@ jobs:
   #       with:
   #         distribution: "temurin"
   #         java-version: 11
-          cache: "maven"
+  #        cache: "maven"
   #         server-id: ossrh
   #         server-username: MAVEN_USERNAME
   #         server-password: MAVEN_PASSWORD
@@ -222,7 +222,7 @@ jobs:
   #       with:
   #         distribution: "temurin"
   #         java-version: 11
-          cache: "maven"
+  #        cache: "maven"
   #         server-id: ossrh
   #         server-username: MAVEN_USERNAME
   #         server-password: MAVEN_PASSWORD
@@ -252,7 +252,7 @@ jobs:
   #       with:
   #         distribution: "temurin"
   #         java-version: 11
-          cache: "maven"
+  #        cache: "maven"
   #         server-id: ossrh
   #         server-username: MAVEN_USERNAME
   #         server-password: MAVEN_PASSWORD
