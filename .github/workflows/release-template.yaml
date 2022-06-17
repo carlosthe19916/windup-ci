@@ -19,7 +19,7 @@ on:
         required: true
         type: string
     secrets:
-      GITHUB_TOKEN:
+      GITHUB_PAT:
         required: true
       NEXUS_USERNAME:
         required: true
@@ -43,7 +43,7 @@ jobs:
         with:
           repository: ${{ inputs.owner }}/${{ inputs.repository }}
           path: repository
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_PAT }}
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -79,7 +79,7 @@ jobs:
           arguments: full-release
         env:
           JRELEASER_PROJECT_VERSION: ${{ inputs.release_version }}
-          JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
       - name: JReleaser - generate log
         if: always()
         working-directory: repository
