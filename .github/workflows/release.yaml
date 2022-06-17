@@ -38,7 +38,7 @@ jobs:
       - name: Maven Release version
         run: |
           source ci/release/utils.sh
-          setNextVersion()
+          cd repository && setNextVersion()
         env:
           NEXT_VERSION: ${{ github.event.inputs.release_version }}
 
