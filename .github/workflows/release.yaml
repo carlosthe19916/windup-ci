@@ -51,7 +51,7 @@ jobs:
       #     MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       - name: Configure JReleaser
         run: |
-          cp release/jreleaser.yml repository/jreleaser.yml
+          cp ci/release/jreleaser.yml repository/jreleaser.yml
       - uses: jreleaser/release-action@v2
         with:
           working-directory: repository
