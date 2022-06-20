@@ -22,9 +22,9 @@ distributions:
       version: 11
     artifacts:
       - path: mta-cli/target/mta-cli-{{projectVersion}}-no-index.zip
-  # offline:
-  #   java:
-  #     groupId: org.jboss.windup
-  #     version: 11
-  #   artifacts:
-  #     - path: mta-cli/target/mta-cli-{{projectVersion}}-offline.zip
+  offline:
+    java:
+      groupId: org.jboss.windup
+      version: 11
+    artifacts:
+      - path: mta-cli/target/mta-cli-{{projectVersion}}-offline.zip

@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       JAVA_OPTS: -Xms2048M -Xmx2048M -Xss6M -XX:ReservedCodeCacheSize=256M -Dfile.encoding=UTF-8
-      JVM_OPTS:  -Xms2048M -Xmx2048M -Xss6M -XX:ReservedCodeCacheSize=256M -Dfile.encoding=UTF-8
+      JVM_OPTS: -Xms2048M -Xmx2048M -Xss6M -XX:ReservedCodeCacheSize=256M -Dfile.encoding=UTF-8
     steps:
       - name: Checkout CI
         uses: actions/checkout@v3
@@ -75,7 +75,7 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}      
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       - name: Setup JReleaser
         run: |
           cp ci/${{ inputs.jreleaser_file }} repository/jreleaser.yml
@@ -85,9 +85,13 @@ jobs:
           echo "::group::📦 Download JReleaser"
           wget https://github.com/jreleaser/jreleaser/releases/download/v1.0.0/jreleaser-tool-provider-1.0.0.jar
           mv jreleaser-* jreleaser-cli.jar
-          
+
           java -jar jreleaser-cli.jar --version
           java -jar jreleaser-cli.jar full-release
+        env:
+          JRELEASER_PROJECT_VERSION: ${{ inputs.release_version }}
+          JRELEASER_PREVIOUS_TAG_NAME: ${{ inputs.previous_version }}
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
       # - name: JReleaser
       #   uses: jreleaser/release-action@2.1.2
       #   with:
