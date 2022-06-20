@@ -1,4 +1,4 @@
-name: Reusable Release
+name: Release Template
 
 on:
   workflow_call:
@@ -31,7 +31,7 @@ on:
         required: true
 
 jobs:
-  release_job:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout CI
@@ -68,7 +68,7 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}      
       - name: Setup JReleaser
         run: |
           cp ci/${{ inputs.jreleaser_file }} repository/jreleaser.yml

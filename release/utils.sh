@@ -10,6 +10,7 @@ function setReleaseVersion() {
 
 function release() {
     echo "Not releasing to Maven central yet"
+    mvn install -DskipTests
 
     # mvn -DskipTests \
     # release:prepare -DpreparationGoals='-DskipTests clean install' \

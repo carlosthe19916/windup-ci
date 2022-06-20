@@ -1,0 +1,13 @@
+project:
+  website: https://windup.github.io/
+  copyright: Copyright (C) 2022 Windup
+
+release:
+  github:
+    owner: carlosthe19916
+    overwrite: true
+
+distributions:
+  jvm:
+    artifacts:
+      - path: mta-cli/target/mta-cli-{{projectVersion}}-offline.zip

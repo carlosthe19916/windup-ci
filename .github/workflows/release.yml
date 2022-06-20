@@ -14,11 +14,14 @@ on:
         default: "Ex: 5.4.1-SNAPSHOT"
         type: string
 
+env:
+  owner: carlosthe19916
+
 jobs:
   windup:
     uses: ./.github/workflows/release-template.yml
     with:
-      owner: carlosthe19916
+      owner: ${{ env.owner }}
       repository: windup
       release_version: ${{ github.event.inputs.release_version }}
       next_development_version: ${{ github.event.inputs.next_development_version }}
@@ -34,7 +37,7 @@ jobs:
     needs: [windup]
     uses: ./.github/workflows/release-template.yml
     with:
-      owner: carlosthe19916
+      owner: ${{ env.owner }}
       repository: windup-rulesets
       release_version: ${{ github.event.inputs.release_version }}
       next_development_version: ${{ github.event.inputs.next_development_version }}
@@ -45,132 +48,22 @@ jobs:
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-  # windup1:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout CI
-  #       uses: actions/checkout@v3
-  #       with:
-  #         path: ci
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v3
-  #       with:
-  #         repository: carlosthe19916/windup
-  #         path: repository
-  #         token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
-  #     - name: Setup Java
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         distribution: "temurin"
-  #         java-version: 11
-  #         cache: "maven"
-  #         server-id: ossrh
-  #         server-username: MAVEN_USERNAME
-  #         server-password: MAVEN_PASSWORD
-  #         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-  #         gpg-passphrase: MAVEN_GPG_PASSPHRASE
-  #     - name: Set release version ${{ github.event.inputs.release_version }}
-  #       run: |
-  #         source ci/release/utils.sh
-  #         cd repository && setReleaseVersion
-  #       env:
-  #         NEXT_VERSION: ${{ github.event.inputs.release_version }}
-  #     - name: Release to OSSRH
-  #       run: |
-  #         source ci/release/utils.sh
-  #         cd repository && release
-  #       env:
-  #         MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-  #         MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  #         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-  #     - name: Setup JReleaser
-  #       run: |
-  #         cp ci/release/generic-jreleaser.yml repository/jreleaser.yml
-  #     - name: JReleaser
-  #       uses: jreleaser/release-action@v2
-  #       with:
-  #         working-directory: repository
-  #         arguments: full-release
-  #       env:
-  #         JRELEASER_PROJECT_VERSION: ${{ github.event.inputs.release_version }}
-  #         JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
-  #     - name: JReleaser - generate log
-  #       if: always()
-  #       working-directory: repository
-  #       run: tar -czvf jreleaser-log.tgz out/
-  #     - name: JReleaser - upload log
-  #       if: always()
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: windup-jreleaser-log
-  #         path: "repository/jreleaser-log.tgz"
-  #     - name: Set next development version ${{ github.event.inputs. next_development_version }}
-  #       run: |
-  #         source ci/release/utils.sh
-  #         cd repository && setNextDevelopmentVersion
-  #       env:
-  #         NEXT_VERSION: ${{ github.event.inputs.next_development_version }}
-
-  # windup-rulesets:
-  #   needs: [windup]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         repository: windup/windup-rulesets
-  #     - uses: actions/setup-java@v3
-  #       with:
-  #         distribution: "temurin"
-  #         java-version: 11
-  #         cache: "maven"
-  #         server-id: ossrh
-  #         server-username: MAVEN_USERNAME
-  #         server-password: MAVEN_PASSWORD
-  #         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-  #         gpg-passphrase: MAVEN_GPG_PASSPHRASE
-  #     - run: ./set-version.sh
-  #       env:
-  #         NEXT_VERSION: ${{ github.event.inputs.release_version }}
-  #     - name: OSSRH Snapshot
-  #       run: |
-  #         mvn -DskipTests \
-  #         release:prepare -DpreparationGoals='-DskipTests clean install' \
-  #         release:perform -P jboss-release,gpg-sign
-  #       env:
-  #         MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-  #         MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  #         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-  # windup-distribution:
-  #   needs: [windup-rulesets]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         repository: windup/windup-distribution
-  #     - uses: actions/setup-java@v3
-  #       with:
-  #         distribution: "temurin"
-  #         java-version: 11
-  #        cache: "maven"
-  #         server-id: ossrh
-  #         server-username: MAVEN_USERNAME
-  #         server-password: MAVEN_PASSWORD
-  #         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-  #         gpg-passphrase: MAVEN_GPG_PASSPHRASE
-  #     - run: ./set-version.sh
-  #       env:
-  #         NEXT_VERSION: ${{ github.event.inputs.release_version }}
-  #     - name: OSSRH Snapshot
-  #       run: |
-  #         mvn -DskipTests \
-  #         release:prepare -DpreparationGoals='-DskipTests clean install' \
-  #         release:perform -P jboss-release,gpg-sign
-  #       env:
-  #         MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-  #         MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  #         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+  
+  windup-distribution:
+    needs: [windup]
+    uses: ./.github/workflows/release-template.yml
+    with:
+      owner: ${{ env.owner }}
+      repository: windup-distribution
+      release_version: ${{ github.event.inputs.release_version }}
+      next_development_version: ${{ github.event.inputs.next_development_version }}
+      jreleaser_file: release/windup-distribution-jreleaser.yml
+    secrets:
+      GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   # windup-web:
   #   needs: [windup-distribution]
