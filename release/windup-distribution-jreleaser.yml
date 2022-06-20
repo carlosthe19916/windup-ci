@@ -15,5 +15,7 @@ release:
 
 distributions:
   jvm:
+    java:
+      groupId: org.jboss.windup
     artifacts:
       - path: mta-cli/target/mta-cli-{{projectVersion}}-offline.zip
