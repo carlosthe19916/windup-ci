@@ -10,6 +10,7 @@ function setReleaseVersion() {
 
 function release() {
     echo "Not releasing to Maven central yet"
+    ls
 
     args="-DskipTests"
 
