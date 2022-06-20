@@ -80,7 +80,7 @@ jobs:
         run: |
           cp ci/${{ inputs.jreleaser_file }} repository/jreleaser.yml
       - name: JReleaser
-        uses: jreleaser/release-action@v2
+        uses: jreleaser/release-action@v2.1.2
         with:
           working-directory: repository
           arguments: full-release
