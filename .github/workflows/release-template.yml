@@ -43,6 +43,7 @@ jobs:
         with:
           repository: ${{ inputs.owner }}/${{ inputs.repository }}
           path: repository
+          fetch-depth: 0
           token: ${{ secrets.GITHUB_PAT }}
       - name: Setup Java
         uses: actions/setup-java@v3
@@ -77,7 +78,7 @@ jobs:
         with:
           working-directory: repository
           arguments: full-release
-          setup-java: false
+          setup-java: "false"
         env:
           JRELEASER_PROJECT_VERSION: ${{ inputs.release_version }}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
