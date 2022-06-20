@@ -78,36 +78,6 @@ jobs:
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
-  # windup-web:
-  #   needs: [windup-distribution]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         repository: windup/windup-web
-  #     - uses: actions/setup-java@v3
-  #       with:
-  #         distribution: "temurin"
-  #         java-version: 11
-  #        cache: "maven"
-  #         server-id: ossrh
-  #         server-username: MAVEN_USERNAME
-  #         server-password: MAVEN_PASSWORD
-  #         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-  #         gpg-passphrase: MAVEN_GPG_PASSPHRASE
-  #     - run: ./set-version.sh
-  #       env:
-  #         NEXT_VERSION: ${{ github.event.inputs.release_version }}
-  #     - name: OSSRH Snapshot
-  #       run: |
-  #         mvn -DskipTests \
-  #         release:prepare -DpreparationGoals='-DskipTests clean install' \
-  #         release:perform -P jboss-release,gpg-sign
-  #       env:
-  #         MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-  #         MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  #         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
   # windup-openshift:
   #   needs: [windup-web]
   #   runs-on: ubuntu-latest

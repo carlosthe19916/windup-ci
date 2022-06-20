@@ -10,6 +10,36 @@ release:
   github:
     owner: carlosthe19916
     overwrite: true
+    changelog:
+      formatted: ALWAYS
+      format: "- {{commitShortHash}} {{commitTitle}}"
+      labelers:
+        - label: "feature"
+          title: "Resolves #"
+          body: "Resolves #"
+        - label: "issue"
+          title: "Fixes #"
+          body: "Fixes #"
+        - label: "issue"
+          title: "Relates to #"
+          body: "Relates to #"
+        - label: "task"
+          title: "[chore]"
+      categories:
+        - title: "🚀 Features"
+          key: "features"
+          labels:
+            - "feature"
+        - title: "✅ Issues"
+          key: "issues"
+          labels:
+            - "issue"
+        - title: "🧰 Tasks"
+          key: "tasks"
+          labels:
+            - "task"
+      replacers:
+        - search: '\[chore\] '
 
 distributions:
   no-index:
