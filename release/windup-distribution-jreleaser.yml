@@ -5,8 +5,6 @@ project:
   license: EPL-1
   authors:
     - Windup Community
-  java:
-    version: 11
 
 release:
   github:
@@ -17,5 +15,6 @@ distributions:
   jvm:
     java:
       groupId: org.jboss.windup
+      version: 11
     artifacts:
       - path: mta-cli/target/mta-cli-{{projectVersion}}-offline.zip

@@ -5,8 +5,6 @@ project:
   license: EPL-1
   authors:
     - Windup Community
-  java:
-    version: 11
 
 release:
   github:
