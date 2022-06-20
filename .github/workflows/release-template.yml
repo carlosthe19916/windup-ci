@@ -61,14 +61,14 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: Set release version ${{ inputs.release_version }}
         run: |
-          source ci/release/utils.sh
+          source ci/scripts/utils.sh
           cp ci/maven/settings.xml repository/settings.xml
           cd repository && setReleaseVersion
         env:
           NEXT_VERSION: ${{ inputs.release_version }}
       - name: Release to OSSRH
         run: |
-          source ci/release/utils.sh
+          source ci/scripts/utils.sh
           cp ci/maven/settings.xml repository/settings.xml
           cd repository && release
         env:
@@ -113,7 +113,7 @@ jobs:
           path: "repository/jreleaser-log.tgz"
       - name: Set next development version ${{ inputs.next_development_version }}
         run: |
-          source ci/release/utils.sh
+          source ci/scripts/utils.sh
           cp ci/maven/settings.xml repository/settings.xml
           cd repository && setNextDevelopmentVersion
         env:
