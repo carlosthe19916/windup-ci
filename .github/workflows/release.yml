@@ -47,7 +47,7 @@ jobs:
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
   
   windup-distribution:
-    needs: [windup]
+    needs: [windup-rulesets]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
