@@ -13,6 +13,11 @@ on:
         required: true
         default: "Ex: 5.4.1-SNAPSHOT"
         type: string
+      previous_version:
+        description: The tag to compare against the release tag. Use to generate the "changelog"
+        required: false
+        default: 5.3.0.Final
+        type: string
 
 jobs:
   windup:
@@ -22,6 +27,7 @@ jobs:
       repository: windup
       release_version: ${{ github.event.inputs.release_version }}
       next_development_version: ${{ github.event.inputs.next_development_version }}
+      previous_version: ${{ github.event.inputs.previous_version }}
       jreleaser_file: jreleaser/basic.yml
     secrets:
       GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
@@ -38,6 +44,7 @@ jobs:
       repository: windup-rulesets
       release_version: ${{ github.event.inputs.release_version }}
       next_development_version: ${{ github.event.inputs.next_development_version }}
+      previous_version: ${{ github.event.inputs.previous_version }}
       jreleaser_file: jreleaser/basic.yml
     secrets:
       GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
@@ -54,6 +61,7 @@ jobs:
       repository: windup-distribution
       release_version: ${{ github.event.inputs.release_version }}
       next_development_version: ${{ github.event.inputs.next_development_version }}
+      previous_version: ${{ github.event.inputs.previous_version }}
       jreleaser_file: jreleaser/windup-distribution.yml
     secrets:
       GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
@@ -70,6 +78,7 @@ jobs:
       repository: windup-web
       release_version: ${{ github.event.inputs.release_version }}
       next_development_version: ${{ github.event.inputs.next_development_version }}
+      previous_version: ${{ github.event.inputs.previous_version }}
       jreleaser_file: jreleaser/basic.yml
     secrets:
       GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}

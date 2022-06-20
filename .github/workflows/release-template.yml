@@ -15,6 +15,9 @@ on:
       next_development_version:
         required: true
         type: string
+      previous_version:
+        required: true
+        type: string
       jreleaser_file:
         required: true
         type: string
@@ -84,6 +87,7 @@ jobs:
           setup-java: "false"
         env:
           JRELEASER_PROJECT_VERSION: ${{ inputs.release_version }}
+          JRELEASER_PREVIOUS_TAG_NAME: ${{ inputs.previous_version }}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
       - name: JReleaser - generate log
         if: always()
