@@ -86,6 +86,23 @@ jobs:
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+  
+  windup-openshift:
+    needs: [windup-web]
+    uses: ./.github/workflows/release-template.yml
+    with:
+      owner: carlosthe19916
+      repository: windup-openshift
+      release_version: ${{ github.event.inputs.release_version }}
+      next_development_version: ${{ github.event.inputs.next_development_version }}
+      previous_version: ${{ github.event.inputs.previous_version }}
+      jreleaser_file: jreleaser/basic.yml
+    secrets:
+      GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   # windup-openshift:
   #   needs: [windup-web]

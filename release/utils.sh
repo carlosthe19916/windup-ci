@@ -11,12 +11,13 @@ function setReleaseVersion() {
 function release() {
     echo "Not releasing to Maven central yet"
 
-    args=""
+    args="-DskipTests"
+
     if test -f "settings.xml"; then
         args="${args} -s settings.xml"
     fi
 
-    mvn install -DskipTests "$args"
+    mvn install "$args"
 
     # mvn -DskipTests \
     # release:prepare -DpreparationGoals='-DskipTests clean install' \
