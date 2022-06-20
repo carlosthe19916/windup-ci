@@ -16,6 +16,7 @@ distributions:
     java:
       groupId: org.jboss.windup
       version: 11
+    type: SINGLE_JAR
     artifacts:
       - path: mta-cli/target/mta-cli-{{projectVersion}}-no-index.zip
       - path: mta-cli/target/mta-cli-{{projectVersion}}-offline.zip
