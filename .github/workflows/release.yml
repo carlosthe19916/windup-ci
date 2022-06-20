@@ -64,7 +64,7 @@ jobs:
 
   windup-web:
     needs: [windup-distribution]
-    uses: ./.github/workflows/basic-template.yml
+    uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
       repository: windup-web
