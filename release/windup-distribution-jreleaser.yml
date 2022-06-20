@@ -12,11 +12,15 @@ release:
     overwrite: true
 
 distributions:
-  jvm:
+  no-index:
     java:
       groupId: org.jboss.windup
       version: 11
-    type: SINGLE_JAR
     artifacts:
       - path: mta-cli/target/mta-cli-{{projectVersion}}-no-index.zip
+  offline:
+    java:
+      groupId: org.jboss.windup
+      version: 11
+    artifacts:
       - path: mta-cli/target/mta-cli-{{projectVersion}}-offline.zip
