@@ -9,13 +9,8 @@ function setReleaseVersion() {
 }
 
 function release() {
-    args="-DskipTests"
-    if test -f "settings.xml"; then
-        args="${args} -U -s settings.xml"
-    fi
-
     echo "Maven args=$args"
-    mvn install "$args"
+    mvn install -DskipTests -s settings.xml
 
     # mvn -DskipTests \
     # release:prepare -DpreparationGoals='-DskipTests clean install' \

@@ -62,12 +62,14 @@ jobs:
       - name: Set release version ${{ inputs.release_version }}
         run: |
           source ci/release/utils.sh
+          cp ci/maven/settings.xml repository/settings.xml
           cd repository && setReleaseVersion
         env:
           NEXT_VERSION: ${{ inputs.release_version }}
       - name: Release to OSSRH
         run: |
           source ci/release/utils.sh
+          cp ci/maven/settings.xml repository/settings.xml
           cd repository && release
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
@@ -112,6 +114,7 @@ jobs:
       - name: Set next development version ${{ inputs.next_development_version }}
         run: |
           source ci/release/utils.sh
+          cp ci/maven/settings.xml repository/settings.xml
           cd repository && setNextDevelopmentVersion
         env:
           NEXT_VERSION: ${{ inputs.next_development_version }}
