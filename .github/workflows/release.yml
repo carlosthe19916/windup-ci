@@ -157,7 +157,7 @@ jobs:
           GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
           GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
-   windup-openshift-before:
+  windup-openshift-before:
     needs: [windup-web-after]
     runs-on: ubuntu-latest
     steps:
@@ -242,7 +242,7 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 11
-          cache: "maven"      
+          cache: "maven"
       - name: Create container images
         run: |
           mvn install -DskipTests \
