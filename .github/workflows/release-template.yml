@@ -32,6 +32,10 @@ on:
         required: true
       GPG_PASSPHRASE:
         required: true
+      GIT_USER_EMAIL:
+        required: true
+      GIT_USER_NAME:
+        required: true
 
 jobs:
   release:
