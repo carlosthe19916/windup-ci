@@ -398,7 +398,7 @@ jobs:
           GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
   windup-quickstarts:
-    needs: [windup-maven-plugin]
+    needs: [windup-quickstarts-before]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
