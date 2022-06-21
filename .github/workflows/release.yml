@@ -19,6 +19,10 @@ on:
         default: 5.3.0.Final
         type: string
 
+env:
+  GIT_USER_EMAIL: carlosthe19916@gmail.com
+  GIT_USER_NAME: carlosthe19916
+
 jobs:
   windup:
     uses: ./.github/workflows/release-template.yml
@@ -91,8 +95,8 @@ jobs:
           sed -i -e "s/<version.windup.web>.*<\/version.windup.web>/<version.windup.web>${RELEASE_VERSION}<\/version.windup.web>/g" tsmodelsgen-maven-plugin/pom.xml
           git add tsmodelsgen-maven-plugin/pom.xml
 
-          git config --global user.email "carlosthe19916@gmail.com"
-          git config --global user.name "Carlos Feria"
+          git config --global user.email "$GIT_USER_EMAIL"
+          git config --global user.name "$GIT_USER_NAME"
 
           git commit --allow-empty -a -m "Preparing for release"
           git push origin HEAD:master
@@ -137,8 +141,8 @@ jobs:
           sed -i -e "s/<version.windup.web>.*<\/version.windup.web>/<version.windup.web>${NEXT_DEVELOPMENT_VERSION}<\/version.windup.web>/g" tsmodelsgen-maven-plugin/pom.xml
           git add tsmodelsgen-maven-plugin/pom.xml
 
-          git config --global user.email "carlosthe19916@gmail.com"
-          git config --global user.name "Carlos Feria"
+          git config --global user.email "$GIT_USER_EMAIL"
+          git config --global user.name "$GIT_USER_NAME"
 
           git commit --allow-empty -a -m "Back to development"
           git push origin HEAD:master
