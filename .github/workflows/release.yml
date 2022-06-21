@@ -19,10 +19,6 @@ on:
         default: 5.3.0.Final
         type: string
 
-env:
-  GIT_USER_EMAIL: carlosthe19916@gmail.com
-  GIT_USER_NAME: carlosthe19916
-
 jobs:
   windup:
     uses: ./.github/workflows/release-template.yml
@@ -102,6 +98,8 @@ jobs:
           git push origin HEAD:master
         env:
           RELEASE_VERSION: ${{ github.event.inputs.release_version }}
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
   windup-web:
     needs: [windup-web-before]
@@ -148,6 +146,8 @@ jobs:
           git push origin HEAD:master
         env:
           NEXT_DEVELOPMENT_VERSION: ${{ github.event.inputs.next_development_version }}
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
   windup-openshift:
     needs: [windup-web-after]

@@ -66,6 +66,8 @@ jobs:
           cd repository && setReleaseVersion
         env:
           NEXT_VERSION: ${{ inputs.release_version }}
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
       - name: Release to OSSRH
         run: |
           source ci/scripts/utils.sh
@@ -104,3 +106,5 @@ jobs:
           cd repository && setNextDevelopmentVersion
         env:
           NEXT_VERSION: ${{ inputs.next_development_version }}
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
