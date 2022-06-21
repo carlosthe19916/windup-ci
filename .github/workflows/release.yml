@@ -70,12 +70,11 @@ jobs:
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
-  windup-web-prepare:
+  windup-web-before:
     needs: [windup-distribution]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout CI
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           repository: carlosthe19916/windup-web
           token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
@@ -98,7 +97,7 @@ jobs:
           RELEASE_VERSION: ${{ github.event.inputs.release_version }}
 
   windup-web:
-    needs: [windup-web-prepare]
+    needs: [windup-web-before]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
@@ -114,8 +113,34 @@ jobs:
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
-  windup-openshift:
+  windup-web-after:
     needs: [windup-web]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: carlosthe19916/windup-web
+          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      - name: Set versions
+        run: |
+          sed -i -e "s/<version.windup>.*<\/version.windup>/<version.windup>${NEXT_DEVELOPMENT_VERSION}<\/version.windup>/g" pom.xml
+          git add pom.xml
+
+          sed -i -e "s/<version.windup.core>.*<\/version.windup.core>/<version.windup.core>${NEXT_DEVELOPMENT_VERSION}<\/version.windup.core>/g" tsmodelsgen-invocation/pom.xml
+          sed -i -e "s/<version.windup.web>.*<\/version.windup.web>/<version.windup.web>${NEXT_DEVELOPMENT_VERSION}<\/version.windup.web>/g" tsmodelsgen-invocation/pom.xml
+          git add tsmodelsgen-invocation/pom.xml
+
+          sed -i -e "s/<version.windup.core>.*<\/version.windup.core>/<version.windup.core>${NEXT_DEVELOPMENT_VERSION}<\/version.windup.core>/g" tsmodelsgen-maven-plugin/pom.xml
+          sed -i -e "s/<version.windup.web>.*<\/version.windup.web>/<version.windup.web>${NEXT_DEVELOPMENT_VERSION}<\/version.windup.web>/g" tsmodelsgen-maven-plugin/pom.xml
+          git add tsmodelsgen-maven-plugin/pom.xml
+
+          git commit --allow-empty -a -m "Back to development"
+          git push origin HEAD:master
+        env:
+          NEXT_DEVELOPMENT_VERSION: ${{ github.event.inputs.next_development_version }}
+
+  windup-openshift:
+    needs: [windup-web-after]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
