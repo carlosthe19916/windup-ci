@@ -162,125 +162,53 @@ jobs:
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
-  # windup-openshift:
-  #   needs: [windup-web]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         repository: windup/windup-openshift
-  #     - run: ./set-version.sh
-  #       env:
-  #         NEXT_VERSION: ${{ github.event.inputs.release_version }}
-  #     - uses: actions/setup-java@v3
-  #       with:
-  #         distribution: "temurin"
-  #         java-version: 11
-  #        cache: "maven"
-  #     - name: Build container images
-  #       run: |
-  #         mvn deploy -DskipTests \
-  #         -Ddocker.name.windup.web.executor=quay.io/windupeng/windup-web-openshift-messaging-executor:${{ github.event.inputs.release_version }} \
-  #         -Ddocker.name.windup.cli=quay.io/windupeng/windup-cli-openshift:${{ github.event.inputs.release_version }} \
-  #         -Ddocker.name.windup.web=quay.io/windupeng/windup-web-openshift:${{ github.event.inputs.release_version }}
-  #     - name: Login to Registry
-  #       uses: docker/login-action@v2
-  #       with:
-  #         registry: quay.io
-  #         username: ${{ secrets.QUAYIO_USERNAME }}
-  #         password: ${{ secrets.QUAYIO_PASSWORD }}
-  #     - name: Push images to Registry
-  #       run: |
-  #         docker push quay.io/windupeng/windup-cli-openshift:${{ github.event.inputs.release_version }}
-  #         docker push quay.io/windupeng/windup-web-openshift-messaging-executor:${{ github.event.inputs.release_version }}
-  #         docker push quay.io/windupeng/windup-web-openshift:${{ github.event.inputs.release_version }}
+  windup-web-distribution:
+    needs: [windup-openshift]
+    uses: ./.github/workflows/release-template.yml
+    with:
+      owner: carlosthe19916
+      repository: windup-web-distribution
+      release_version: ${{ github.event.inputs.release_version }}
+      next_development_version: ${{ github.event.inputs.next_development_version }}
+      previous_version: ${{ github.event.inputs.previous_version }}
+      jreleaser_file: jreleaser/basic.yml
+    secrets:
+      GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
-  # windup-web-distribution:
-  #   needs: [windup-openshift]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         repository: windup/windup-web-distribution
-  #     - uses: actions/setup-java@v3
-  #       with:
-  #         distribution: "temurin"
-  #         java-version: 11
-  #        cache: "maven"
-  #         server-id: ossrh
-  #         server-username: MAVEN_USERNAME
-  #         server-password: MAVEN_PASSWORD
-  #         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-  #         gpg-passphrase: MAVEN_GPG_PASSPHRASE
-  #     - run: ./set-version.sh
-  #       env:
-  #         NEXT_VERSION: ${{ github.event.inputs.release_version }}
-  #     - name: OSSRH Snapshot
-  #       run: |
-  #         mvn -DskipTests \
-  #         release:prepare -DpreparationGoals='-DskipTests clean install' \
-  #         release:perform -P jboss-release,gpg-sign
-  #       env:
-  #         MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-  #         MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  #         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+  windup-maven-plugin:
+    needs: [windup-web-distribution]
+    uses: ./.github/workflows/release-template.yml
+    with:
+      owner: carlosthe19916
+      repository: windup-maven-plugin
+      release_version: ${{ github.event.inputs.release_version }}
+      next_development_version: ${{ github.event.inputs.next_development_version }}
+      previous_version: ${{ github.event.inputs.previous_version }}
+      jreleaser_file: jreleaser/basic.yml
+    secrets:
+      GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
-  # windup-maven-plugin:
-  #   needs: [windup-web-distribution]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         repository: windup/windup-maven-plugin
-  #     - uses: actions/setup-java@v3
-  #       with:
-  #         distribution: "temurin"
-  #         java-version: 11
-  #        cache: "maven"
-  #         server-id: ossrh
-  #         server-username: MAVEN_USERNAME
-  #         server-password: MAVEN_PASSWORD
-  #         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-  #         gpg-passphrase: MAVEN_GPG_PASSPHRASE
-  #     - run: ./set-version.sh
-  #       env:
-  #         NEXT_VERSION: ${{ github.event.inputs.release_version }}
-  #     - name: OSSRH Snapshot
-  #       run: |
-  #         mvn -DskipTests \
-  #         release:prepare -DpreparationGoals='-DskipTests clean install' \
-  #         release:perform -P jboss-release,gpg-sign
-  #       env:
-  #         MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-  #         MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  #         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-  # windup-quickstarts:
-  #   needs: [windup-web-distribution]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         repository: windup/windup-maven-plugin
-  #     - uses: actions/setup-java@v3
-  #       with:
-  #         distribution: "temurin"
-  #         java-version: 11
-  #        cache: "maven"
-  #         server-id: ossrh
-  #         server-username: MAVEN_USERNAME
-  #         server-password: MAVEN_PASSWORD
-  #         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-  #         gpg-passphrase: MAVEN_GPG_PASSPHRASE
-  #     - run: ./set-version.sh
-  #       env:
-  #         NEXT_VERSION: ${{ github.event.inputs.release_version }}
-  #     - name: OSSRH Snapshot
-  #       run: |
-  #         mvn -DskipTests \
-  #         release:prepare -DpreparationGoals='-DskipTests clean install' \
-  #         release:perform -P jboss-release,gpg-sign
-  #       env:
-  #         MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-  #         MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  #         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+  windup-quickstarts:
+    needs: [windup-maven-plugin]
+    uses: ./.github/workflows/release-template.yml
+    with:
+      owner: carlosthe19916
+      repository: windup-quickstarts
+      release_version: ${{ github.event.inputs.release_version }}
+      next_development_version: ${{ github.event.inputs.next_development_version }}
+      previous_version: ${{ github.event.inputs.previous_version }}
+      jreleaser_file: jreleaser/basic.yml
+    secrets:
+      GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
