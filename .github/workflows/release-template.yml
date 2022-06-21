@@ -91,6 +91,7 @@ jobs:
           arguments: full-release
         env:
           JRELEASER_PROJECT_VERSION: ${{ inputs.release_version }}
+          JRELEASER_TAG_NAME: ${{ inputs.release_version }}
           JRELEASER_PREVIOUS_TAG_NAME: ${{ inputs.previous_version }}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
       - name: JReleaser - generate log
