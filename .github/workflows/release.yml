@@ -282,8 +282,44 @@ jobs:
       GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
       GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
-  windup-maven-plugin:
+  windup-maven-plugin-before:
     needs: [windup-web-distribution]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: carlosthe19916/windup-maven-plugin
+          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      - name: Set versions
+        run: |
+          sed -i -e "s/<version.windupcore>.*<\/version.windupcore>/<version.windupcore>${RELEASE_VERSION}<\/version.windupcore>/g" pom.xml
+          git add pom.xml
+
+          sed -i -e "s/<version.windupcore>.*<\/version.windupcore>/<version.windupcore>${RELEASE_VERSION}<\/version.windupcore>/g" src/it/simple-it/pom.xml
+          sed -i -e "s/<version>.*<\/version>/<version>${RELEASE_VERSION}<\/version>/g" src/it/simple-it/pom.xml
+          git add src/it/simple-it/pom.xml
+
+          sed -i -e "s/<version>.*<\/version>/<version>${RELEASE_VERSION}<\/version>/g" src/test/resources/mojoTestConfig.xml
+          git add src/test/resources/mojoTestConfig.xml
+
+          sed -i -e "s/<windupVersion>.*<\/windupVersion>/<windupVersion>${RELEASE_VERSION}<\/windupVersion>/g" src/test/resources/mojoTestConfigWithWindupVersion.xml
+          git add src/test/resources/mojoTestConfigWithWindupVersion.xml
+
+          sed -i -e "s/assertEquals(mojo2.getWindupVersion(), \".*\");/assertEquals(mojo2.getWindupVersion(), \"${RELEASE_VERSION}\");/g" src/test/java/org/jboss/windup/plugin/WindupMojoTest.java
+          git add src/test/java/org/jboss/windup/plugin/WindupMojoTest.java
+
+          git config --global user.email "$GIT_USER_EMAIL"
+          git config --global user.name "$GIT_USER_NAME"
+
+          git commit --allow-empty -a -m "Preparing for release"
+          git push origin HEAD:master
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.release_version }}
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+
+  windup-maven-plugin:
+    needs: [windup-maven-plugin-before]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
@@ -300,6 +336,66 @@ jobs:
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
       GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+
+  windup-maven-plugin-after:
+    needs: [windup-maven-plugin]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: carlosthe19916/windup-maven-plugin
+          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      - name: Set versions
+        run: |
+          sed -i -e "s/<version.windupcore>.*<\/version.windupcore>/<version.windupcore>${NEXT_DEVELOPMENT_VERSION}<\/version.windupcore>/g" pom.xml
+          git add pom.xml
+
+          sed -i -e "s/<version.windupcore>.*<\/version.windupcore>/<version.windupcore>${NEXT_DEVELOPMENT_VERSION}<\/version.windupcore>/g" src/it/simple-it/pom.xml
+          sed -i -e "s/<version>.*<\/version>/<version>${NEXT_DEVELOPMENT_VERSION}<\/version>/g" src/it/simple-it/pom.xml
+          git add src/it/simple-it/pom.xml
+
+          sed -i -e "s/<version>.*<\/version>/<version>${NEXT_DEVELOPMENT_VERSION}<\/version>/g" src/test/resources/mojoTestConfig.xml
+          git add src/test/resources/mojoTestConfig.xml
+
+          sed -i -e "s/<windupVersion>.*<\/windupVersion>/<windupVersion>${NEXT_DEVELOPMENT_VERSION}<\/windupVersion>/g" src/test/resources/mojoTestConfigWithWindupVersion.xml
+          git add src/test/resources/mojoTestConfigWithWindupVersion.xml
+
+          sed -i -e "s/assertEquals(mojo2.getWindupVersion(), \".*\");/assertEquals(mojo2.getWindupVersion(), \"${NEXT_DEVELOPMENT_VERSION}\");/g" src/test/java/org/jboss/windup/plugin/WindupMojoTest.java
+          git add src/test/java/org/jboss/windup/plugin/WindupMojoTest.java
+
+          git config --global user.email "$GIT_USER_EMAIL"
+          git config --global user.name "$GIT_USER_NAME"      
+
+          git commit --allow-empty -a -m "Back to development"
+          git push origin HEAD:master
+        env:
+          NEXT_DEVELOPMENT_VERSION: ${{ github.event.inputs.next_development_version }}
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+
+  windup-quickstarts-before:
+    needs: [windup-maven-plugin-after]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: carlosthe19916/windup-quickstarts
+          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      - name: Set versions
+        run: |
+          MVN_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+          find . -name pom.xml -exec sed -i -e "s/${MVN_VERSION}/${RELEASE_VERSION}/g" {} \;
+          git add -A
+
+          git config --global user.email "$GIT_USER_EMAIL"
+          git config --global user.name "$GIT_USER_NAME"
+
+          git commit --allow-empty -a -m "Preparing for release"
+          git push origin HEAD:master
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.release_version }}
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
   windup-quickstarts:
     needs: [windup-maven-plugin]
@@ -319,3 +415,26 @@ jobs:
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
       GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+
+  windup-quickstarts-after:
+    needs: [windup-quickstarts]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: carlosthe19916/windup-quickstarts
+          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      - name: Set versions
+        run: |
+          find . -name pom.xml -exec sed -i -e "s/${RELEASE_VERSION}/${NEXT_DEVELOPMENT_VERSION}/g" {} \;
+          git add -A
+
+          git config --global user.email "$GIT_USER_EMAIL"
+          git config --global user.name "$GIT_USER_NAME"      
+
+          git commit --allow-empty -a -m "Back to development"
+          git push origin HEAD:master
+        env:
+          NEXT_DEVELOPMENT_VERSION: ${{ github.event.inputs.next_development_version }}
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
