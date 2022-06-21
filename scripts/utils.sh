@@ -9,7 +9,6 @@ function setReleaseVersion() {
 }
 
 function release() {
-    echo "Maven args=$args"
     mvn install -DskipTests -s settings.xml
 
     # mvn -DskipTests \
