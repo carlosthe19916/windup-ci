@@ -157,8 +157,34 @@ jobs:
           GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
           GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
-  windup-openshift:
+   windup-openshift-before:
     needs: [windup-web-after]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: carlosthe19916/windup-openshift
+          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      - name: Set versions
+        run: |
+          sed -i -e "s/\"DOCKER_IMAGES_TAG\"/\"${RELEASE_VERSION}\"/g" templates/src/main/resources/web-template-empty-dir-executor.json
+          git add templates/src/main/resources/web-template-empty-dir-executor.json
+
+          sed -i -e "s/\"DOCKER_IMAGES_TAG\"/\"${RELEASE_VERSION}\"/g" templates/src/main/resources/web-template-empty-dir-executor-shared-storage.json
+          git add templates/src/main/resources/web-template-empty-dir-executor-shared-storage.json
+
+          git config --global user.email "$GIT_USER_EMAIL"
+          git config --global user.name "$GIT_USER_NAME"
+
+          git commit --allow-empty -a -m "Preparing for release"
+          git push origin HEAD:master
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.release_version }}
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+
+  windup-openshift:
+    needs: [windup-openshift-before]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
@@ -176,8 +202,69 @@ jobs:
       GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
       GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
-  windup-web-distribution:
+  windup-openshift-after:
     needs: [windup-openshift]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: carlosthe19916/windup-openshift
+          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      - name: Set versions
+        run: |
+          sed -i -e "s/\"DOCKER_IMAGES_TAG\"/\"${NEXT_DEVELOPMENT_VERSION}\"/g" templates/src/main/resources/web-template-empty-dir-executor.json
+          git add templates/src/main/resources/web-template-empty-dir-executor.json
+
+          sed -i -e "s/\"DOCKER_IMAGES_TAG\"/\"${NEXT_DEVELOPMENT_VERSION}\"/g" templates/src/main/resources/web-template-empty-dir-executor-shared-storage.json
+          git add templates/src/main/resources/web-template-empty-dir-executor-shared-storage.json
+
+          git config --global user.email "$GIT_USER_EMAIL"
+          git config --global user.name "$GIT_USER_NAME"      
+
+          git commit --allow-empty -a -m "Back to development"
+          git push origin HEAD:master
+        env:
+          NEXT_DEVELOPMENT_VERSION: latest
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+
+  windup-openshift-container-images:
+    needs: [windup-openshift-after]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: carlosthe19916/windup-openshift
+          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+          ref: ${{ github.event.inputs.release_version }}
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: 11
+          cache: "maven"      
+      - name: Create container images
+        run: |
+          mvn install -DskipTests \
+          -Ddocker.name.windup.web=quay.io/carlosthe19916/windup-web-openshift:$TAG \
+          -Ddocker.name.windup.web.executor=quay.io/carlosthe19916/windup-web-openshift-messaging-executor:$TAG \
+          -Ddocker.name.windup.cli=quay.io/carlosthe19916/windup-cli-openshift:$TAG
+        env:
+          TAG: ${{ github.event.inputs.release_version }}
+      - name: Login to Registry
+        uses: docker/login-action@v2
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAYIO_USERNAME }}
+          password: ${{ secrets.QUAYIO_PASSWORD }}
+      - name: Push images to registry
+        run: |
+          docker image push --all-tags quay.io/carlosthe19916/windup-web-openshift
+          docker image push --all-tags quay.io/carlosthe19916/windup-web-openshift-messaging-executor
+          docker image push --all-tags quay.io/carlosthe19916/windup-cli-openshift
+
+  windup-web-distribution:
+    needs: [windup-openshift-container-images]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
