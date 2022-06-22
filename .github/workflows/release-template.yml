@@ -66,8 +66,6 @@ jobs:
           cd repository && setReleaseVersion
         env:
           NEXT_VERSION: ${{ inputs.release_version }}
-          # GIT_USER_EMAIL: ${{ input.global_git_user_email }}
-          # GIT_USER_NAME: ${{ input.global_git_user_name }}
       - name: Commit and Push
         uses: carlosthe19916/windup-ci/actions/commit@master
         with:
@@ -112,8 +110,6 @@ jobs:
           cd repository && setNextDevelopmentVersion
         env:
           NEXT_VERSION: ${{ inputs.next_development_version }}
-          # GIT_USER_EMAIL: ${{ input.global_git_user_email }}
-          # GIT_USER_NAME: ${{ input.global_git_user_name }}
       - name: Commit and Push
         uses: carlosthe19916/windup-ci/actions/commit@master
         with:

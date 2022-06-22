@@ -90,16 +90,12 @@ jobs:
           sed -i -e "s/<version.windup.core>.*<\/version.windup.core>/<version.windup.core>${RELEASE_VERSION}<\/version.windup.core>/g" tsmodelsgen-maven-plugin/pom.xml
           sed -i -e "s/<version.windup.web>.*<\/version.windup.web>/<version.windup.web>${RELEASE_VERSION}<\/version.windup.web>/g" tsmodelsgen-maven-plugin/pom.xml
           git add tsmodelsgen-maven-plugin/pom.xml
-
-          git config --global user.email "$GIT_USER_EMAIL"
-          git config --global user.name "$GIT_USER_NAME"
-
-          git commit --allow-empty -a -m "Preparing for release"
-          git push origin HEAD:master
         env:
           RELEASE_VERSION: ${{ github.event.inputs.release_version }}
-          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+      - name: Commit and Push
+        uses: carlosthe19916/windup-ci/actions/commit@master
+        with:
+          commit_message: "Preparing for release"
 
   windup-web:
     needs: [windup-web-before]
@@ -138,16 +134,12 @@ jobs:
           sed -i -e "s/<version.windup.core>.*<\/version.windup.core>/<version.windup.core>${NEXT_DEVELOPMENT_VERSION}<\/version.windup.core>/g" tsmodelsgen-maven-plugin/pom.xml
           sed -i -e "s/<version.windup.web>.*<\/version.windup.web>/<version.windup.web>${NEXT_DEVELOPMENT_VERSION}<\/version.windup.web>/g" tsmodelsgen-maven-plugin/pom.xml
           git add tsmodelsgen-maven-plugin/pom.xml
-
-          git config --global user.email "$GIT_USER_EMAIL"
-          git config --global user.name "$GIT_USER_NAME"
-
-          git commit --allow-empty -a -m "Back to development"
-          git push origin HEAD:master
         env:
           NEXT_DEVELOPMENT_VERSION: ${{ github.event.inputs.next_development_version }}
-          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+      - name: Commit and Push
+        uses: carlosthe19916/windup-ci/actions/commit@master
+        with:
+          commit_message: "Back to development"
 
   windup-openshift-before:
     needs: [windup-web-after]
@@ -164,16 +156,12 @@ jobs:
 
           sed -i -e "s/\"DOCKER_IMAGES_TAG\"/\"${RELEASE_VERSION}\"/g" templates/src/main/resources/web-template-empty-dir-executor-shared-storage.json
           git add templates/src/main/resources/web-template-empty-dir-executor-shared-storage.json
-
-          git config --global user.email "$GIT_USER_EMAIL"
-          git config --global user.name "$GIT_USER_NAME"
-
-          git commit --allow-empty -a -m "Preparing for release"
-          git push origin HEAD:master
         env:
           RELEASE_VERSION: ${{ github.event.inputs.release_version }}
-          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+      - name: Commit and Push
+        uses: carlosthe19916/windup-ci/actions/commit@master
+        with:
+          commit_message: "Preparing for release"
 
   windup-openshift:
     needs: [windup-openshift-before]
@@ -207,16 +195,12 @@ jobs:
 
           sed -i -e "s/\"DOCKER_IMAGES_TAG\"/\"${NEXT_DEVELOPMENT_VERSION}\"/g" templates/src/main/resources/web-template-empty-dir-executor-shared-storage.json
           git add templates/src/main/resources/web-template-empty-dir-executor-shared-storage.json
-
-          git config --global user.email "$GIT_USER_EMAIL"
-          git config --global user.name "$GIT_USER_NAME"      
-
-          git commit --allow-empty -a -m "Back to development"
-          git push origin HEAD:master
         env:
           NEXT_DEVELOPMENT_VERSION: latest
-          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+      - name: Commit and Push
+        uses: carlosthe19916/windup-ci/actions/commit@master
+        with:
+          commit_message: "Back to development"
 
   windup-openshift-container-images:
     needs: [windup-openshift-after]
@@ -295,16 +279,12 @@ jobs:
 
           sed -i -e "s/assertEquals(mojo2.getWindupVersion(), \".*\");/assertEquals(mojo2.getWindupVersion(), \"${RELEASE_VERSION}\");/g" src/test/java/org/jboss/windup/plugin/WindupMojoTest.java
           git add src/test/java/org/jboss/windup/plugin/WindupMojoTest.java
-
-          git config --global user.email "$GIT_USER_EMAIL"
-          git config --global user.name "$GIT_USER_NAME"
-
-          git commit --allow-empty -a -m "Preparing for release"
-          git push origin HEAD:master
         env:
           RELEASE_VERSION: ${{ github.event.inputs.release_version }}
-          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+      - name: Commit and Push
+        uses: carlosthe19916/windup-ci/actions/commit@master
+        with:
+          commit_message: "Preparing for release"
 
   windup-maven-plugin:
     needs: [windup-maven-plugin-before]
@@ -348,16 +328,12 @@ jobs:
 
           sed -i -e "s/assertEquals(mojo2.getWindupVersion(), \".*\");/assertEquals(mojo2.getWindupVersion(), \"${NEXT_DEVELOPMENT_VERSION}\");/g" src/test/java/org/jboss/windup/plugin/WindupMojoTest.java
           git add src/test/java/org/jboss/windup/plugin/WindupMojoTest.java
-
-          git config --global user.email "$GIT_USER_EMAIL"
-          git config --global user.name "$GIT_USER_NAME"      
-
-          git commit --allow-empty -a -m "Back to development"
-          git push origin HEAD:master
         env:
           NEXT_DEVELOPMENT_VERSION: ${{ github.event.inputs.next_development_version }}
-          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+      - name: Commit and Push
+        uses: carlosthe19916/windup-ci/actions/commit@master
+        with:
+          commit_message: "Back to development"
 
   windup-quickstarts-before:
     needs: [windup-maven-plugin-after]
@@ -372,16 +348,12 @@ jobs:
           MVN_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
           find . -name pom.xml -exec sed -i -e "s/${MVN_VERSION}/${RELEASE_VERSION}/g" {} \;
           git add -A
-
-          git config --global user.email "$GIT_USER_EMAIL"
-          git config --global user.name "$GIT_USER_NAME"
-
-          git commit --allow-empty -a -m "Preparing for release"
-          git push origin HEAD:master
         env:
           RELEASE_VERSION: ${{ github.event.inputs.release_version }}
-          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+      - name: Commit and Push
+        uses: carlosthe19916/windup-ci/actions/commit@master
+        with:
+          commit_message: "Preparing for release"
 
   windup-quickstarts:
     needs: [windup-quickstarts-before]
@@ -412,13 +384,9 @@ jobs:
         run: |
           find . -name pom.xml -exec sed -i -e "s/${RELEASE_VERSION}/${NEXT_DEVELOPMENT_VERSION}/g" {} \;
           git add -A
-
-          git config --global user.email "$GIT_USER_EMAIL"
-          git config --global user.name "$GIT_USER_NAME"      
-
-          git commit --allow-empty -a -m "Back to development"
-          git push origin HEAD:master
         env:
           NEXT_DEVELOPMENT_VERSION: ${{ github.event.inputs.next_development_version }}
-          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+      - name: Commit and Push
+        uses: carlosthe19916/windup-ci/actions/commit@master
+        with:
+          commit_message: "Back to development"

@@ -13,6 +13,10 @@ inputs:
   commit_message:
     required: true
     description: Commit message to be used
+  branch:
+    required: true
+    default: master
+    description: branch to push commits
   working-directory:
     required: true
     default: ${{ github.workspace }}
@@ -35,6 +39,6 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         git commit --allow-empty -a -m "Preparing for release"
-        git push origin HEAD:master
+        git push origin HEAD:${{ inputs.branch }}
       env:
         COMMIT_MESSAGE: ${{ inputs.commit_message }}
