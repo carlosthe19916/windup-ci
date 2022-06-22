@@ -12,10 +12,9 @@ release:
     overwrite: true
     changelog:
       formatted: ALWAYS
-      preset: 'conventional-commits'
-      format: '- {{commitShortHash}} {{commitTitle}}'
+      preset: "conventional-commits"
+      format: "- {{commitShortHash}} {{commitTitle}}"
 
-# https://github.com/jreleaser/release-action/issues/8
 distributions:
   no-index:
     java:
@@ -23,9 +22,9 @@ distributions:
       version: 11
     artifacts:
       - path: mta-cli/target/mta-cli-{{projectVersion}}-no-index.zip
-  # offline:
-  #   java:
-  #     groupId: org.jboss.windup
-  #     version: 11
-  #   artifacts:
-  #     - path: mta-cli/target/mta-cli-{{projectVersion}}-offline.zip
+  offline:
+    java:
+      groupId: org.jboss.windup
+      version: 11
+    artifacts:
+      - path: mta-cli/target/mta-cli-{{projectVersion}}-offline.zip
