@@ -32,10 +32,6 @@ on:
         required: true
       GPG_PASSPHRASE:
         required: true
-      GIT_USER_EMAIL:
-        required: true
-      GIT_USER_NAME:
-        required: true
 
 jobs:
   release:
@@ -70,8 +66,13 @@ jobs:
           cd repository && setReleaseVersion
         env:
           NEXT_VERSION: ${{ inputs.release_version }}
-          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+          # GIT_USER_EMAIL: ${{ input.global_git_user_email }}
+          # GIT_USER_NAME: ${{ input.global_git_user_name }}
+      - name: Commit and Push
+        uses: carlosthe19916/windup-ci/actions/commit@master
+        with:
+          working-directory: repository
+          commit_message: "🏁 Releasing version ${{ inputs.release_version }}"
       - name: Release to OSSRH
         run: |
           source ci/scripts/utils.sh
@@ -111,5 +112,10 @@ jobs:
           cd repository && setNextDevelopmentVersion
         env:
           NEXT_VERSION: ${{ inputs.next_development_version }}
-          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+          # GIT_USER_EMAIL: ${{ input.global_git_user_email }}
+          # GIT_USER_NAME: ${{ input.global_git_user_name }}
+      - name: Commit and Push
+        uses: carlosthe19916/windup-ci/actions/commit@master
+        with:
+          working-directory: repository
+          commit_message: "⬆️  Next version ${{ inputs.next_development_version }}"

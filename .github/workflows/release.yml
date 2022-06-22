@@ -35,8 +35,6 @@ jobs:
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-      GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
   windup-rulesets:
     needs: [windup]
@@ -54,8 +52,6 @@ jobs:
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-      GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
   windup-distribution:
     needs: [windup-rulesets]
@@ -73,8 +69,6 @@ jobs:
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-      GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
   windup-web-before:
     needs: [windup-distribution]
@@ -123,8 +117,6 @@ jobs:
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-      GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
   windup-web-after:
     needs: [windup-web]
@@ -199,8 +191,6 @@ jobs:
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-      GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
   windup-openshift-after:
     needs: [windup-openshift]
@@ -279,8 +269,6 @@ jobs:
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-      GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
   windup-maven-plugin-before:
     needs: [windup-web-distribution]
@@ -334,8 +322,6 @@ jobs:
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-      GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
   windup-maven-plugin-after:
     needs: [windup-maven-plugin]
@@ -413,8 +399,6 @@ jobs:
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-      GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
   windup-quickstarts-after:
     needs: [windup-quickstarts]
