@@ -327,7 +327,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: carlosthe19916/windup-maven-plugin
-          repository: windup/windup-maven-plugin
+          # repository: windup/windup-maven-plugin
           token: ${{ secrets.GH_PAT }}
       - name: Set versions
         run: |
