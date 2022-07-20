@@ -13,24 +13,19 @@ on:
         required: true
         default: "Ex: 5.4.1-SNAPSHOT"
         type: string
-      previous_version:
-        description: The tag to compare against the release tag. Use to generate the "changelog"
-        required: false
-        default: 5.3.0.Final
-        type: string
 
 jobs:
   windup:
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
+      # owner: windup
       repository: windup
       release_version: ${{ github.event.inputs.release_version }}
       next_development_version: ${{ github.event.inputs.next_development_version }}
-      previous_version: ${{ github.event.inputs.previous_version }}
       jreleaser_file: jreleaser/basic.yml
     secrets:
-      GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
       NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -41,13 +36,13 @@ jobs:
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
+      # owner: windup
       repository: windup-rulesets
       release_version: ${{ github.event.inputs.release_version }}
       next_development_version: ${{ github.event.inputs.next_development_version }}
-      previous_version: ${{ github.event.inputs.previous_version }}
       jreleaser_file: jreleaser/basic.yml
     secrets:
-      GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
       NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -58,13 +53,13 @@ jobs:
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
+      # owner: windup
       repository: windup-distribution
       release_version: ${{ github.event.inputs.release_version }}
       next_development_version: ${{ github.event.inputs.next_development_version }}
-      previous_version: ${{ github.event.inputs.previous_version }}
-      jreleaser_file: jreleaser/windup-distribution.yml
+      jreleaser_file: jreleaser/basic.yml
     secrets:
-      GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
       NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -77,7 +72,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: carlosthe19916/windup-web
-          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+          # repository: windup/windup-web
+          token: ${{ secrets.GITHUB_PAT }}
       - name: Set versions
         run: |
           sed -i -e "s/<version.windup>.*<\/version.windup>/<version.windup>${RELEASE_VERSION}<\/version.windup>/g" pom.xml
@@ -94,6 +90,7 @@ jobs:
           RELEASE_VERSION: ${{ github.event.inputs.release_version }}
       - name: Commit and Push
         uses: carlosthe19916/windup-ci/actions/commit@master
+        # uses: windup/windup-ci/actions/commit@master
         with:
           commit_message: "Preparing for release"
 
@@ -102,13 +99,13 @@ jobs:
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
+      # owner: windup
       repository: windup-web
       release_version: ${{ github.event.inputs.release_version }}
       next_development_version: ${{ github.event.inputs.next_development_version }}
-      previous_version: ${{ github.event.inputs.previous_version }}
       jreleaser_file: jreleaser/basic.yml
     secrets:
-      GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
       NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -121,7 +118,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: carlosthe19916/windup-web
-          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+          # repository: windup/windup-web
+          token: ${{ secrets.GITHUB_PAT }}
       - name: Set versions
         run: |
           sed -i -e "s/<version.windup>.*<\/version.windup>/<version.windup>${NEXT_DEVELOPMENT_VERSION}<\/version.windup>/g" pom.xml
@@ -138,6 +136,7 @@ jobs:
           NEXT_DEVELOPMENT_VERSION: ${{ github.event.inputs.next_development_version }}
       - name: Commit and Push
         uses: carlosthe19916/windup-ci/actions/commit@master
+        # uses: windup/windup-ci/actions/commit@master
         with:
           commit_message: "Back to development"
 
@@ -148,7 +147,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: carlosthe19916/windup-openshift
-          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+          # repository: windup/windup-openshift
+          token: ${{ secrets.GITHUB_PAT }}
       - name: Set versions
         run: |
           sed -i -e "s/\"DOCKER_IMAGES_TAG\"/\"${RELEASE_VERSION}\"/g" templates/src/main/resources/web-template-empty-dir-executor.json
@@ -160,6 +160,7 @@ jobs:
           RELEASE_VERSION: ${{ github.event.inputs.release_version }}
       - name: Commit and Push
         uses: carlosthe19916/windup-ci/actions/commit@master
+        # uses: windup/windup-ci/actions/commit@master
         with:
           commit_message: "Preparing for release"
 
@@ -168,13 +169,13 @@ jobs:
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
+      # owner: windup
       repository: windup-openshift
       release_version: ${{ github.event.inputs.release_version }}
       next_development_version: ${{ github.event.inputs.next_development_version }}
-      previous_version: ${{ github.event.inputs.previous_version }}
       jreleaser_file: jreleaser/basic.yml
     secrets:
-      GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
       NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -187,7 +188,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: carlosthe19916/windup-openshift
-          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+          # repository: windup/windup-openshift
+          token: ${{ secrets.GITHUB_PAT }}
       - name: Set versions
         run: |
           sed -i -e "s/\"DOCKER_IMAGES_TAG\"/\"${NEXT_DEVELOPMENT_VERSION}\"/g" templates/src/main/resources/web-template-empty-dir-executor.json
@@ -199,6 +201,7 @@ jobs:
           NEXT_DEVELOPMENT_VERSION: latest
       - name: Commit and Push
         uses: carlosthe19916/windup-ci/actions/commit@master
+        # uses: windup/windup-ci/actions/commit@master
         with:
           commit_message: "Back to development"
 
@@ -209,7 +212,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: carlosthe19916/windup-openshift
-          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+          # repository: windup/windup-openshift
+          token: ${{ secrets.GITHUB_PAT }}
           ref: ${{ github.event.inputs.release_version }}
       - name: Setup Java
         uses: actions/setup-java@v3
@@ -223,6 +227,11 @@ jobs:
           -Ddocker.name.windup.web=quay.io/carlosthe19916/windup-web-openshift:$TAG \
           -Ddocker.name.windup.web.executor=quay.io/carlosthe19916/windup-web-openshift-messaging-executor:$TAG \
           -Ddocker.name.windup.cli=quay.io/carlosthe19916/windup-cli-openshift:$TAG
+
+          # mvn install -DskipTests \
+          # -Ddocker.name.windup.web=quay.io/windupeng/windup-web-openshift:$TAG \
+          # -Ddocker.name.windup.web.executor=quay.io/windupeng/windup-web-openshift-messaging-executor:$TAG \
+          # -Ddocker.name.windup.cli=quay.io/windupeng/windup-cli-openshift:$TAG
         env:
           TAG: ${{ github.event.inputs.release_version }}
       - name: Login to Registry
@@ -237,18 +246,22 @@ jobs:
           docker image push --all-tags quay.io/carlosthe19916/windup-web-openshift-messaging-executor
           docker image push --all-tags quay.io/carlosthe19916/windup-cli-openshift
 
+          # docker image push --all-tags quay.io/windupeng/windup-web-openshift
+          # docker image push --all-tags quay.io/windupeng/windup-web-openshift-messaging-executor
+          # docker image push --all-tags quay.io/windupeng/windup-cli-openshift
+
   windup-web-distribution:
     needs: [windup-openshift-container-images]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
+      # owner: windup
       repository: windup-web-distribution
       release_version: ${{ github.event.inputs.release_version }}
       next_development_version: ${{ github.event.inputs.next_development_version }}
-      previous_version: ${{ github.event.inputs.previous_version }}
-      jreleaser_file: jreleaser/windup-web-distribution.yml
+      jreleaser_file: jreleaser/basic.yml
     secrets:
-      GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
       NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -261,7 +274,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: carlosthe19916/windup-maven-plugin
-          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+          # repository: windup/windup-maven-plugin
+          token: ${{ secrets.GITHUB_PAT }}
       - name: Set versions
         run: |
           sed -i -e "s/<version.windupcore>.*<\/version.windupcore>/<version.windupcore>${RELEASE_VERSION}<\/version.windupcore>/g" pom.xml
@@ -283,6 +297,7 @@ jobs:
           RELEASE_VERSION: ${{ github.event.inputs.release_version }}
       - name: Commit and Push
         uses: carlosthe19916/windup-ci/actions/commit@master
+        # uses: windup/windup-ci/actions/commit@master
         with:
           commit_message: "Preparing for release"
 
@@ -291,13 +306,13 @@ jobs:
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
+      # owner: windup
       repository: windup-maven-plugin
       release_version: ${{ github.event.inputs.release_version }}
       next_development_version: ${{ github.event.inputs.next_development_version }}
-      previous_version: ${{ github.event.inputs.previous_version }}
       jreleaser_file: jreleaser/basic.yml
     secrets:
-      GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
       NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -310,7 +325,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: carlosthe19916/windup-maven-plugin
-          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+          repository: windup/windup-maven-plugin
+          token: ${{ secrets.GITHUB_PAT }}
       - name: Set versions
         run: |
           sed -i -e "s/<version.windupcore>.*<\/version.windupcore>/<version.windupcore>${NEXT_DEVELOPMENT_VERSION}<\/version.windupcore>/g" pom.xml
@@ -332,6 +348,7 @@ jobs:
           NEXT_DEVELOPMENT_VERSION: ${{ github.event.inputs.next_development_version }}
       - name: Commit and Push
         uses: carlosthe19916/windup-ci/actions/commit@master
+        # uses: windup/windup-ci/actions/commit@master
         with:
           commit_message: "Back to development"
 
@@ -342,7 +359,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: carlosthe19916/windup-quickstarts
-          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+          # repository: windup/windup-quickstarts
+          token: ${{ secrets.GITHUB_PAT }}
       - name: Set versions
         run: |
           MVN_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
@@ -352,6 +370,7 @@ jobs:
           RELEASE_VERSION: ${{ github.event.inputs.release_version }}
       - name: Commit and Push
         uses: carlosthe19916/windup-ci/actions/commit@master
+        # uses: windup/windup-ci/actions/commit@master
         with:
           commit_message: "Preparing for release"
 
@@ -360,13 +379,13 @@ jobs:
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
+      # owner: windup
       repository: windup-quickstarts
       release_version: ${{ github.event.inputs.release_version }}
       next_development_version: ${{ github.event.inputs.next_development_version }}
-      previous_version: ${{ github.event.inputs.previous_version }}
       jreleaser_file: jreleaser/basic.yml
     secrets:
-      GITHUB_PAT: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
       NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -379,7 +398,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: carlosthe19916/windup-quickstarts
-          token: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+          # repository: windup/windup-quickstarts
+          token: ${{ secrets.GITHUB_PAT }}
       - name: Set versions
         run: |
           find . -name pom.xml -exec sed -i -e "s/${RELEASE_VERSION}/${NEXT_DEVELOPMENT_VERSION}/g" {} \;
@@ -388,5 +408,6 @@ jobs:
           NEXT_DEVELOPMENT_VERSION: ${{ github.event.inputs.next_development_version }}
       - name: Commit and Push
         uses: carlosthe19916/windup-ci/actions/commit@master
+        # uses: windup/windup-ci/actions/commit@master
         with:
           commit_message: "Back to development"

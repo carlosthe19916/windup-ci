@@ -15,9 +15,6 @@ on:
       next_development_version:
         required: true
         type: string
-      previous_version:
-        required: true
-        type: string
       jreleaser_file:
         required: true
         type: string
@@ -46,7 +43,7 @@ jobs:
         with:
           repository: ${{ inputs.owner }}/${{ inputs.repository }}
           path: repository
-          # fetch-depth: 0
+          fetch-depth: 0
           token: ${{ secrets.GITHUB_PAT }}
       - name: Setup Java
         uses: actions/setup-java@v3
@@ -68,6 +65,7 @@ jobs:
           NEXT_VERSION: ${{ inputs.release_version }}
       - name: Commit and Push
         uses: carlosthe19916/windup-ci/actions/commit@master
+        # uses: windup/windup-ci/actions/commit@master
         with:
           working-directory: repository
           commit_message: "🏁 Releasing version ${{ inputs.release_version }}"
@@ -113,6 +111,7 @@ jobs:
           NEXT_VERSION: ${{ inputs.next_development_version }}
       - name: Commit and Push
         uses: carlosthe19916/windup-ci/actions/commit@master
+        # uses: windup/windup-ci/actions/commit@master
         with:
           working-directory: repository
           commit_message: "⬆️  Next version ${{ inputs.next_development_version }}"

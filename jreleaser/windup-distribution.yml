@@ -8,7 +8,7 @@ project:
 
 release:
   github:
-    owner: carlosthe19916
+    owner: windup
     overwrite: true
     changelog:
       formatted: ALWAYS
@@ -21,10 +21,10 @@ distributions:
       groupId: org.jboss.windup
       version: 11
     artifacts:
-      - path: mta-cli/target/mta-cli-{{projectVersion}}-no-index.zip
+      - path: windup-cli/target/windup-cli-{{projectVersion}}-no-index.zip
   offline:
     java:
       groupId: org.jboss.windup
       version: 11
     artifacts:
-      - path: mta-cli/target/mta-cli-{{projectVersion}}-offline.zip
+      - path: windup-cli/target/windup-cli-{{projectVersion}}-offline.zip

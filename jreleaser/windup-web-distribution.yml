@@ -8,7 +8,7 @@ project:
 
 release:
   github:
-    owner: carlosthe19916
+    owner: windup
     overwrite: true
     changelog:
       formatted: ALWAYS
@@ -21,4 +21,4 @@ distributions:
       groupId: org.jboss.windup.web
       version: 11
     artifacts:
-      - path: target/mta-web-distribution-{{projectVersion}}-with-authentication.zip
+      - path: target/windup-web-distribution-{{projectVersion}}-with-authentication.zip
