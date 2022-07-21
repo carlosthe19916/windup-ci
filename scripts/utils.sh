@@ -5,7 +5,7 @@ function setReleaseVersion() {
 }
 
 function release() {
-    mvn install -DskipTests -s settings.xml
+    mvn install -DskipTests -s $SETTINGS_XML
 }
 
 function setNextDevelopmentVersion() {
