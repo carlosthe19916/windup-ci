@@ -56,6 +56,9 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      - name: Global maven settings
+        run: |
+          cat /home/runner/.m2/settings.xml 
       - name: Set release version ${{ inputs.release_version }}
         run: |
           export SETTINGS_XML=$(readlink -f ci/maven/settings.xml)
