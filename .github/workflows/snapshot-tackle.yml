@@ -3,7 +3,7 @@ name: Snapshots Tackle
 on:
   # schedule:
   #   - cron: "0 0 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch: { }
 
 jobs:
   tackle:
@@ -31,7 +31,7 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
       - name: Build
-        run: |          
+        run: |
           mvn install -DskipTests -f windup
           mvn install -DskipTests -f windup-rulesets
       - name: windup

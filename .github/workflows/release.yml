@@ -32,7 +32,7 @@ jobs:
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-rulesets:
-    needs: [windup]
+    needs: [ windup ]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
@@ -49,7 +49,7 @@ jobs:
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-distribution:
-    needs: [windup-rulesets]
+    needs: [ windup-rulesets ]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
@@ -66,7 +66,7 @@ jobs:
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-web-before:
-    needs: [windup-distribution]
+    needs: [ windup-distribution ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -96,7 +96,7 @@ jobs:
           commit_message: "Preparing for release"
 
   windup-web:
-    needs: [windup-web-before]
+    needs: [ windup-web-before ]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
@@ -113,7 +113,7 @@ jobs:
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-web-after:
-    needs: [windup-web]
+    needs: [ windup-web ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -143,7 +143,7 @@ jobs:
           commit_message: "Back to development"
 
   windup-openshift-before:
-    needs: [windup-web-after]
+    needs: [ windup-web-after ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -167,7 +167,7 @@ jobs:
           commit_message: "Preparing for release"
 
   windup-openshift:
-    needs: [windup-openshift-before]
+    needs: [ windup-openshift-before ]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
@@ -184,7 +184,7 @@ jobs:
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-openshift-after:
-    needs: [windup-openshift]
+    needs: [ windup-openshift ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -208,7 +208,7 @@ jobs:
           commit_message: "Back to development"
 
   windup-openshift-container-images:
-    needs: [windup-openshift-after]
+    needs: [ windup-openshift-after ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -253,7 +253,7 @@ jobs:
           # docker image push --all-tags quay.io/windupeng/windup-cli-openshift
 
   windup-web-distribution:
-    needs: [windup-openshift-container-images]
+    needs: [ windup-openshift-container-images ]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
@@ -270,7 +270,7 @@ jobs:
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-maven-plugin-before:
-    needs: [windup-web-distribution]
+    needs: [ windup-web-distribution ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -304,7 +304,7 @@ jobs:
           commit_message: "Preparing for release"
 
   windup-maven-plugin:
-    needs: [windup-maven-plugin-before]
+    needs: [ windup-maven-plugin-before ]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
@@ -321,7 +321,7 @@ jobs:
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-maven-plugin-after:
-    needs: [windup-maven-plugin]
+    needs: [ windup-maven-plugin ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -355,7 +355,7 @@ jobs:
           commit_message: "Back to development"
 
   windup-quickstarts-before:
-    needs: [windup-maven-plugin-after]
+    needs: [ windup-maven-plugin-after ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -377,7 +377,7 @@ jobs:
           commit_message: "Preparing for release"
 
   windup-quickstarts:
-    needs: [windup-quickstarts-before]
+    needs: [ windup-quickstarts-before ]
     uses: ./.github/workflows/release-template.yml
     with:
       owner: carlosthe19916
@@ -395,7 +395,7 @@ jobs:
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
   windup-quickstarts-after:
-    needs: [windup-quickstarts]
+    needs: [ windup-quickstarts ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

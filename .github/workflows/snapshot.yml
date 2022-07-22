@@ -3,7 +3,7 @@ name: Snapshots
 on:
   # schedule:
   #   - cron: "0 0 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch: { }
 
 jobs:
   windup:
@@ -27,7 +27,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   windup-rulesets:
-    needs: [windup]
+    needs: [ windup ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -48,7 +48,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   windup-distribution:
-    needs: [windup-rulesets]
+    needs: [ windup-rulesets ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -69,7 +69,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   windup-web:
-    needs: [windup-distribution]
+    needs: [ windup-distribution ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -90,7 +90,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   windup-keyckoak-tool:
-    needs: [windup-web]
+    needs: [ windup-web ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -111,7 +111,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   windup-web-keycloak-theme:
-    needs: [windup-web]
+    needs: [ windup-web ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -132,7 +132,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   windup-openshift:
-    needs: [windup-keyckoak-tool, windup-web-keycloak-theme]
+    needs: [ windup-keyckoak-tool, windup-web-keycloak-theme ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -176,7 +176,7 @@ jobs:
           # docker push quay.io/windupeng/windup-web-openshift
 
   windup-web-distribution:
-    needs: [windup-openshift]
+    needs: [ windup-openshift ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -197,7 +197,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   windup-maven-plugin:
-    needs: [windup-web-distribution]
+    needs: [ windup-web-distribution ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
