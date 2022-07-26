@@ -5,7 +5,7 @@ function setReleaseVersion() {
 }
 
 function release() {
-    mvn deploy -DskipTests --settings $SETTINGS_XML --global-settings /home/runner/.m2/settings.xml 
+    mvn source:jar javadoc:jar deploy -DskipTests --settings $SETTINGS_XML --global-settings /home/runner/.m2/settings.xml 
 }
 
 function setNextDevelopmentVersion() {
