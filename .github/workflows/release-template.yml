@@ -20,7 +20,7 @@ on:
         type: string
       skip_maven_release:
         description: If "true" we won't execute "mvn deploy" but just "mvn install" to avoid releasing to Maven Central
-        required: true
+        required: false
         default: false
         type: boolean
     secrets:
@@ -80,7 +80,7 @@ jobs:
           export SETTINGS_XML=$(readlink -f ci/maven/settings.xml)          
           cd repository && mvn install -DskipTests -s $SETTINGS_XML
       - name: Release to OSSRH
-        if: ${{ inputs.skip_maven_release == false }}
+        if: ${{ inputs.skip_maven_release != true }}
         run: |
           export SETTINGS_XML=$(readlink -f ci/maven/settings.xml)
           source ci/scripts/utils.sh
