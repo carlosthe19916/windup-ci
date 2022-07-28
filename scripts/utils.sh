@@ -5,9 +5,6 @@ function setReleaseVersion() {
 }
 
 function release() {
-    # mvn source:jar javadoc:jar verify gpg:sign install deploy \
-
-    # mvn package gpg:sign \
     mvn verify \
     source:jar javadoc:jar \
     gpg:sign install:install deploy:deploy \
@@ -15,11 +12,6 @@ function release() {
     -DskipTests \
     -s $SETTINGS_XML \
     -gs /home/runner/.m2/settings.xml
-
-    # mvn gpg:sign deploy \
-    # -DskipTests \
-    # -s $SETTINGS_XML \
-    # -gs /home/runner/.m2/settings.xml
 }
 
 function setNextDevelopmentVersion() {
