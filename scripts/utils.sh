@@ -8,12 +8,15 @@ function release() {
     # mvn source:jar javadoc:jar verify gpg:sign install deploy \
 
     # mvn package gpg:sign \
-    mvn source:jar javadoc:jar package gpg:sign deploy -DskipTests \
-    -Dgpg.executable="$GPG_SCRIPT" -DskipTests \
+    mvn verify \
+    source:jar javadoc:jar \
+    gpg:sign install:install deploy:deploy \
+    -Dgpg.executable="$GPG_SCRIPT" \
+    -DskipTests \
     -s $SETTINGS_XML \
     -gs /home/runner/.m2/settings.xml
 
-    # mvn deploy \
+    # mvn gpg:sign deploy \
     # -DskipTests \
     # -s $SETTINGS_XML \
     # -gs /home/runner/.m2/settings.xml
