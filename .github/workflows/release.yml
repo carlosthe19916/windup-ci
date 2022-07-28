@@ -6,12 +6,12 @@ on:
       release_version:
         description: "The value of the version to be released"
         required: true
-        default: "Ex: 5.4.0.Final"
+        default: "Ex: 6.0.0.Final"
         type: string
       next_development_version:
         description: "The value of the next version to be developed"
         required: true
-        default: "Ex: 5.4.1-SNAPSHOT"
+        default: "Ex: 6.1.0-SNAPSHOT"
         type: string
 
 jobs:
