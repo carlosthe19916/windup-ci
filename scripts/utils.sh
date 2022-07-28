@@ -6,8 +6,8 @@ function setReleaseVersion() {
 
 function release() {
     # mvn source:jar javadoc:jar verify gpg:sign install deploy \
-    
-    mvn source:jar javadoc:jar verify gpg:sign install
+
+    mvn source:jar javadoc:jar verify gpg:sign install \
     -Dgpg.executable="$GPG_SCRIPT" -DskipTests \
     -s $SETTINGS_XML \
     -gs /home/runner/.m2/settings.xml
