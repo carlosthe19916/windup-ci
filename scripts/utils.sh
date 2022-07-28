@@ -5,7 +5,10 @@ function setReleaseVersion() {
 }
 
 function release() {
-    mvn source:jar javadoc:jar gpg:sign deploy -DskipTests --settings $SETTINGS_XML --global-settings /home/runner/.m2/settings.xml 
+    mvn source:jar javadoc:jar gpg:sign deploy \
+    -Dgpg.executable="$GPG_SCRIPT" -DskipTests \
+    -s $SETTINGS_XML \
+    -gs /home/runner/.m2/settings.xml 
 }
 
 function setNextDevelopmentVersion() {

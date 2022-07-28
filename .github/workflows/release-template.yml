@@ -82,9 +82,8 @@ jobs:
       - name: Release to OSSRH
         if: ${{ inputs.skip_maven_release != true }}
         run: |
-          export GPG_TTY=$(tty)
-          
           export SETTINGS_XML=$(readlink -f ci/maven/settings.xml)
+          export GPG_SCRIPT=$(readlink -f ci/scripts/gpghack.sh)
           source ci/scripts/utils.sh
           cd repository && release
         env:
