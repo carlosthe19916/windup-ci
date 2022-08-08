@@ -1,0 +1,64 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "The value of the version to be released"
+        required: true
+        default: "Ex: 6.0.0.Final"
+        type: string
+      next_development_version:
+        description: "The value of the next version to be developed"
+        required: true
+        default: "Ex: 6.1.0-SNAPSHOT"
+        type: string
+
+jobs:
+  windup-openshift-before:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: carlosthe19916/windup-openshift
+          # repository: windup/windup-openshift
+          token: ${{ secrets.GH_PAT }}
+      - name: Set versions
+        run: |
+          groovy ./templates/src/main/resources/web-template-empty-dir-executor.json ${RELEASE_VERSION}
+          groovy ./templates/src/main/resources/web-template-empty-dir-executor-shared-storage.json ${RELEASE_VERSION}
+          
+          git add templates/src/main/resources/web-template-empty-dir-executor.json
+          git add templates/src/main/resources/web-template-empty-dir-executor-shared-storage.json
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.release_version }}
+      - name: Commit and Push
+        uses: carlosthe19916/windup-ci/actions/commit@master
+        # uses: windup/windup-ci/actions/commit@master
+        with:
+          commit_message: "Preparing for release"
+
+  windup-openshift-after:
+    needs: [ windup-openshift-before ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: carlosthe19916/windup-openshift
+          # repository: windup/windup-openshift
+          token: ${{ secrets.GH_PAT }}
+      - name: Set versions
+        run: |
+          groovy ./templates/src/main/resources/web-template-empty-dir-executor.json ${NEXT_IMAGE_TAG_DEVELOPMENT_VERSION}
+          groovy ./templates/src/main/resources/web-template-empty-dir-executor-shared-storage.json ${NEXT_IMAGE_TAG_DEVELOPMENT_VERSION}
+
+          git add templates/src/main/resources/web-template-empty-dir-executor.json
+          git add templates/src/main/resources/web-template-empty-dir-executor-shared-storage.json
+        env:
+          NEXT_DEVELOPMENT_VERSION: ${{ github.event.inputs.next_development_version }}
+          NEXT_IMAGE_TAG_DEVELOPMENT_VERSION: latest
+      - name: Commit and Push
+        uses: carlosthe19916/windup-ci/actions/commit@master
+        # uses: windup/windup-ci/actions/commit@master
+        with:
+          commit_message: "Back to development"
