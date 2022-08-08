@@ -23,10 +23,13 @@ jobs:
           repository: carlosthe19916/windup-openshift
           # repository: windup/windup-openshift
           token: ${{ secrets.GH_PAT }}
-      - name: Set versions
+      - name: Install groovy
         run: |
           sudo apt-get install -y groovy
-
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.release_version }}
+      - name: Set versions
+        run: |
           groovy ./templates/src/main/resources/web-template-empty-dir-executor.json ${RELEASE_VERSION}
           groovy ./templates/src/main/resources/web-template-empty-dir-executor-shared-storage.json ${RELEASE_VERSION}
           
