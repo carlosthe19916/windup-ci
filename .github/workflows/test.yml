@@ -25,6 +25,8 @@ jobs:
           token: ${{ secrets.GH_PAT }}
       - name: Set versions
         run: |
+          sudo apt-get install groovy
+
           groovy ./templates/src/main/resources/web-template-empty-dir-executor.json ${RELEASE_VERSION}
           groovy ./templates/src/main/resources/web-template-empty-dir-executor-shared-storage.json ${RELEASE_VERSION}
           
@@ -49,6 +51,8 @@ jobs:
           token: ${{ secrets.GH_PAT }}
       - name: Set versions
         run: |
+          sudo apt-get install groovy
+
           groovy ./templates/src/main/resources/web-template-empty-dir-executor.json ${NEXT_IMAGE_TAG_DEVELOPMENT_VERSION}
           groovy ./templates/src/main/resources/web-template-empty-dir-executor-shared-storage.json ${NEXT_IMAGE_TAG_DEVELOPMENT_VERSION}
 
